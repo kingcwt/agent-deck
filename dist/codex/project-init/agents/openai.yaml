@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Init"
+  short_description: "Inspect, install, run, and summarize a codebase"
+  default_prompt: "Use $pi to inspect the current project, install dependencies, start it, and summarize how it works."
+policy:
+  allow_implicit_invocation: false
