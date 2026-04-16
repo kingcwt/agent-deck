@@ -2,7 +2,7 @@
 name: diff-review
 display_name: Diff Review
 description: Review and explain the current editor file's git changes. Use when the user types /df, /diff-review, $df, $diff-review, df, or asks to analyze the current file diff, explain each change point and why it exists, connect the edits to surrounding code and project context, judge whether the edits are necessary, and check whether the implementation stays minimal, reuses existing code, and avoids unrelated shared-code edits or opportunistic refactors.
-short_description: Analyze a file diff for intent, necessity, and scope control
+short_description: Analyze a file diff for intent, necessity, and scope control [对当前的GIT更改做审查]
 default_prompt: Use $df to inspect the current file diff, explain the meaning of the changes, judge whether they are necessary, and flag non-minimal or risky edits.
 codex_names: df,diff-review
 claude_skill_names: df,diff-review

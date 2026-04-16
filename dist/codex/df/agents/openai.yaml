@@ -1,6 +1,6 @@
 interface:
   display_name: "Diff Review"
-  short_description: "Analyze a file diff for intent, necessity, and scope control"
+  short_description: "Analyze a file diff for intent, necessity, and scope control [对当前的GIT更改做审查]"
   default_prompt: "Use $df to inspect the current file diff, explain the meaning of the changes, judge whether they are necessary, and flag non-minimal or risky edits."
 policy:
   allow_implicit_invocation: false
