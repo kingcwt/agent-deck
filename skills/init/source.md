@@ -10,6 +10,9 @@ claude_commands: pi,project-init
 allow_implicit_invocation: false
 ---
 
+> Canonical source for this skill. Keep this file as the only executable source of truth.
+> See `source.zh-CN.md` for the one-to-one Chinese translation used only for reading and understanding.
+
 # Init
 
 ## Overview

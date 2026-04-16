@@ -1,46 +1,50 @@
 # Agent Deck
 
-`agent-deck` is a single-source shortcut and skill repository for Codex and Claude Code.
+[English README](./README.en.md)
 
-You author each workflow once, then generate and install all required targets:
+`agent-deck` 是一个面向 Codex 和 Claude Code 的单一源技能仓库。
+
+你只维护一次工作流定义，然后生成并安装到多个目标：
 
 - Codex skills
 - Claude Code skills
 - Claude Code slash commands
 
-Current repository: `https://github.com/kingcwt/agent-deck`
+当前仓库地址：`https://github.com/kingcwt/agent-deck`
 
-## What This Solves
+## 这个仓库解决什么问题
 
-Instead of repeatedly typing long prompts like “analyze the current project, install dependencies, start it, verify it, and summarize it,” you keep a short reusable command set such as:
+你不需要反复输入很长的提示词，比如“分析当前项目、安装依赖、启动、验证并输出项目说明”。
 
-- Codex: `$pi` or `$project-init`
-- Claude Code: `/pi` or `/project-init`
+你只需要维护一组短指令，例如：
 
-The workflow itself lives in one source file and is rendered into the formats required by each tool.
+- Codex：`$pi` 或 `$project-init`
+- Claude Code：`/pi` 或 `/project-init`
 
-## Current Skill Set
+真正的工作流只写在一个源文件里，然后自动渲染成各个平台所需的格式。
+
+## 当前已有技能
 
 ### `init`
 
-Project bootstrap and baseline analysis.
+用于项目初始化和基线分析。
 
-Aliases generated from one source:
+同一个源文件会生成这些别名：
 
-- Codex skills: `pi`, `project-init`
-- Claude skills: `pi`, `project-init`
-- Claude commands: `/pi`, `/project-init`
+- Codex skills：`pi`、`project-init`
+- Claude skills：`pi`、`project-init`
+- Claude commands：`/pi`、`/project-init`
 
-Purpose:
+用途：
 
-- inspect the current project
-- detect the package manager and runtime shape
-- install dependencies
-- start the main local app or dev server
-- verify readiness
-- summarize the project structure and blockers
+- 检查当前项目结构
+- 识别包管理器和运行方式
+- 安装依赖
+- 启动主应用或开发服务
+- 验证是否可访问
+- 输出项目结构、技术栈和阻塞项说明
 
-## Repository Structure
+## 仓库结构
 
 ```text
 agent-deck/
@@ -54,22 +58,25 @@ agent-deck/
 │   ├── codex/
 │   └── claude/
 ├── install.sh
-└── README.md
+├── README.md
+└── README.en.md
 ```
 
-Meaning of each part:
+各目录含义：
 
-- `skills/*/source.md`: the only file you manually maintain for a skill
-- `scripts/render_skills.py`: generates publishable artifacts
-- `scripts/sync.sh`: regenerates and installs locally
-- `dist/`: generated output; commit this for public installs
-- `install.sh`: one-command installer/updater for local or remote use
+- `skills/*/source.md`：技能唯一人工维护源文件
+- `scripts/render_skills.py`：把源文件渲染成发布产物
+- `scripts/sync.sh`：本地重新生成并安装到 Codex / Claude 目录
+- `dist/`：生成产物；为了远程安装和公开发布，应该提交到 GitHub
+- `install.sh`：本地或远程一键安装/更新入口
+- `README.md`：默认中文说明
+- `README.en.md`：英文说明
 
-## Authoring Model
+## 编写模型
 
-Each skill is defined once in `source.md`.
+每个技能只定义一次，写在 `source.md` 中。
 
-Example metadata:
+元数据示例：
 
 ```md
 ---
@@ -85,35 +92,33 @@ allow_implicit_invocation: false
 ---
 ```
 
-This lets one workflow fan out into multiple aliases without duplicating the body.
+这样一个工作流就可以展开成多个别名，不需要复制正文。
 
-## Local Development
+## 本地开发
 
-Render and install locally:
+本地渲染并安装：
 
 ```bash
-cd ~/Desktop/agent-deck
+cd ~/Desktop/kingcwt/work/agent-deck
 ./scripts/sync.sh
 ```
 
-This will:
+这个命令会：
 
-- rebuild `dist/`
-- install Codex skills to `~/.codex/skills`
-- install Claude skills to `~/.claude/skills`
-- install Claude commands to `~/.claude/commands`
+- 重建 `dist/`
+- 安装 Codex skills 到 `~/.codex/skills`
+- 安装 Claude skills 到 `~/.claude/skills`
+- 安装 Claude commands 到 `~/.claude/commands`
 
-If you only want to regenerate artifacts without installing:
+如果你只想生成产物，不想安装：
 
 ```bash
 python3 ./scripts/render_skills.py
 ```
 
-## Install
+## 安装
 
-### Local checkout
-
-Clone the repository and install/update:
+### 本地仓库安装
 
 ```bash
 git clone https://github.com/kingcwt/agent-deck.git
@@ -121,71 +126,69 @@ cd agent-deck
 ./install.sh
 ```
 
-### Direct from GitHub
-
-Install or update without manually cloning:
+### 直接从 GitHub 安装
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/kingcwt/agent-deck/main/install.sh | bash -s -- --repo kingcwt/agent-deck --ref main
 ```
 
-`install.sh` is intentionally idempotent:
+`install.sh` 是幂等的：
 
-- first run = install
-- later runs = update/overwrite with the latest repo state
+- 第一次执行：安装
+- 之后再次执行：更新并覆盖到最新版本
 
-## Update
+## 更新
 
-If you already have a local checkout:
+如果你已经有本地仓库：
 
 ```bash
-cd ~/Desktop/agent-deck
+cd ~/Desktop/kingcwt/work/agent-deck
 git pull
 ./install.sh
 ```
 
-If you prefer the remote installer path, just run the same curl command again.
+如果你用的是远程安装方式，重复执行同一个 `curl ... | bash` 命令即可。
 
-## Publish Workflow
+## 发布工作流
 
-When you change a skill:
+当你修改某个技能时：
 
-1. edit `skills/*/source.md`
-2. run `./scripts/sync.sh`
-3. test in Codex and Claude Code
-4. commit both the source files and the generated `dist/` files
-5. push to GitHub
+1. 编辑 `skills/*/source.md`
+2. 运行 `./scripts/sync.sh`
+3. 在 Codex 和 Claude Code 中测试
+4. 提交源文件和生成后的 `dist/`
+5. 推送到 GitHub
 
-`dist/` is committed on purpose so:
+之所以提交 `dist/`，是因为：
 
-- remote installs work consistently
-- other users can inspect generated outputs
-- skill catalogs and install tooling can consume the repository more easily
+- 远程安装更稳定
+- 其他用户可以直接检查生成产物
+- 更容易被技能目录或安装工具消费
 
-## Add a New Skill
+## 新增一个技能
 
-1. create `skills/<new-skill>/source.md`
-2. copy an existing source file as a base
-3. update the metadata and workflow body
-4. choose aliases:
+1. 新建 `skills/<new-skill>/source.md`
+2. 复制现有技能作为模板
+3. 修改元数据和正文
+4. 配置别名：
    - `codex_names: foo,bar`
    - `claude_skill_names: foo,bar`
    - `claude_commands: foo,bar`
-5. run `./scripts/sync.sh`
-6. commit source and regenerated `dist/`
+5. 运行 `./scripts/sync.sh`
+6. 提交源文件和新的 `dist/`
 
-## Why Claude Has Both Skills And Commands
+## 为什么 Claude 同时有 skills 和 commands
 
-Claude Code supports reusable skills and slash commands, and they solve different problems:
+Claude Code 同时支持可复用技能和 slash commands，两者用途不同：
 
-- Claude skills help with reusable packaged capability
-- Claude commands provide the shortest possible invocation UX, such as `/pi`
+- Claude skills 用于能力复用和技能分发
+- Claude commands 用于最短路径调用体验，例如 `/pi`
 
-This repository emits both from the same source file so you do not maintain duplicate logic.
+这个仓库会从同一个源文件同时生成两种产物，避免你维护两套重复逻辑。
 
-## Notes
+## 备注
 
-- Codex works best with explicit skill invocation such as `$pi`
-- Claude uses `/pi` and `/project-init`
-- `/init` is intentionally avoided for Claude commands because it conflicts with Claude’s built-in command naming
-- the repository is designed to scale to many skills without changing the overall structure
+- Codex 更适合显式调用 skill，例如 `$pi`
+- Claude 使用 `/pi` 和 `/project-init`
+- Claude 侧故意不使用 `/init`，因为它容易与内置命令语义冲突
+- 这个仓库的结构可以继续扩展到很多技能，不需要重构整体架构

@@ -122,7 +122,7 @@ def render_claude_alias(alias: str, metadata: dict[str, str], body: str) -> None
             "<!-- This file is generated from skills/*/source.md. Edit the source file instead. -->",
             "",
             "Execute the following workflow in the current working directory.",
-            "Treat this command as the user's personal project bootstrap shortcut.",
+            "Treat this command as the user's explicit shortcut for the workflow below.",
             "",
             body.rstrip(),
             "",

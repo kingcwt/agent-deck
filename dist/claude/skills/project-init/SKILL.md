@@ -3,6 +3,9 @@ name: project-init
 description: Initialize and baseline the current code project. Use when the user types /pi, /project-init, $pi, $project-init, pi, or asks to inspect the current repository, detect the stack and package manager, install dependencies, start the main local app or dev server, verify it is reachable, and output a detailed project description with startup notes, config dependencies, and blockers.
 ---
 
+> Canonical source for this skill. Keep this file as the only executable source of truth.
+> See `source.zh-CN.md` for the one-to-one Chinese translation used only for reading and understanding.
+
 # Init
 
 ## Overview
