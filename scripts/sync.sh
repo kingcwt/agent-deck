@@ -7,10 +7,16 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Re-render generated artifacts from the single-source skill files.
 python3 "$ROOT_DIR/scripts/render_skills.py"
 
-# Remove the old bootstrap command names that existed before alias support.
+# Remove retired bootstrap aliases so old entries do not linger in user installs.
 rm -rf "$HOME/.codex/skills/init"
+rm -rf "$HOME/.codex/skills/pi"
+rm -rf "$HOME/.codex/skills/project-init"
 rm -f "$HOME/.claude/commands/init.md"
+rm -f "$HOME/.claude/commands/pi.md"
+rm -f "$HOME/.claude/commands/project-init.md"
 rm -rf "$HOME/.claude/skills/init"
+rm -rf "$HOME/.claude/skills/pi"
+rm -rf "$HOME/.claude/skills/project-init"
 
 # Install Codex skills into the auto-discovered local skills directory.
 mkdir -p "$HOME/.codex/skills"

@@ -18,8 +18,8 @@
 
 你只需要维护一组短指令，例如：
 
-- Codex：`$pi` 或 `$project-init`
-- Claude Code：`/pi` 或 `/project-init`
+- Codex：`$kc-pi`
+- Claude Code：`/kc-pi`
 
 真正的工作流只写在一个源文件里，然后自动渲染成各个平台所需的格式。
 
@@ -31,9 +31,9 @@
 
 同一个源文件会生成这些别名：
 
-- Codex skills：`pi`、`project-init`
-- Claude skills：`pi`、`project-init`
-- Claude commands：`/pi`、`/project-init`
+- Codex skills：`kc-pi`
+- Claude skills：`kc-pi`
+- Claude commands：`/kc-pi`
 
 用途：
 
@@ -43,6 +43,24 @@
 - 启动主应用或开发服务
 - 验证是否可访问
 - 输出项目结构、技术栈和阻塞项说明
+
+### `git-push`
+
+用于把当前仓库改动提交并推送到远程。
+
+同一个源文件会生成这些别名：
+
+- Codex skills：`kc-gp`
+- Claude skills：`kc-gp`
+- Claude commands：`/kc-gp`
+
+用途：
+
+- 要求快捷词后必须带提交说明
+- 检查当前分支、工作区状态和远程配置
+- 暂存当前仓库改动
+- 创建一次 git 提交
+- 把当前分支推送到远程仓库
 
 ## 仓库结构
 
@@ -85,9 +103,9 @@ display_name: Project Init
 description: ...
 short_description: ...
 default_prompt: ...
-codex_names: pi,project-init
-claude_skill_names: pi,project-init
-claude_commands: pi,project-init
+codex_names: kc-pi
+claude_skill_names: kc-pi
+claude_commands: kc-pi
 allow_implicit_invocation: false
 ---
 ```
@@ -182,13 +200,13 @@ git pull
 Claude Code 同时支持可复用技能和 slash commands，两者用途不同：
 
 - Claude skills 用于能力复用和技能分发
-- Claude commands 用于最短路径调用体验，例如 `/pi`
+- Claude commands 用于最短路径调用体验，例如 `/kc-pi`
 
 这个仓库会从同一个源文件同时生成两种产物，避免你维护两套重复逻辑。
 
 ## 备注
 
-- Codex 更适合显式调用 skill，例如 `$pi`
-- Claude 使用 `/pi` 和 `/project-init`
+- Codex 更适合显式调用 skill，例如 `$kc-pi`
+- Claude 使用 `/kc-pi`
 - Claude 侧故意不使用 `/init`，因为它容易与内置命令语义冲突
 - 这个仓库的结构可以继续扩展到很多技能，不需要重构整体架构

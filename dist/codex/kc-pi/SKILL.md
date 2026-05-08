@@ -1,6 +1,6 @@
 ---
-name: pi
-description: Initialize and baseline the current code project. Use when the user types /pi, /project-init, $pi, $project-init, pi, or asks to inspect the current repository, detect the stack and package manager, install dependencies, start the main local app or dev server, verify it is reachable, and output a detailed project description with startup notes, config dependencies, and blockers.
+name: kc-pi
+description: Initialize and baseline the current code project. Use when the user types /kc-pi, $kc-pi, kc-pi, or asks to inspect the current repository, detect the stack and package manager, install dependencies, start the main local app or dev server, verify it is reachable, and output a detailed project description with startup notes, config dependencies, and blockers.
 ---
 
 > Canonical source for this skill. Keep this file as the only executable source of truth.
@@ -53,7 +53,7 @@ Initialize the current project from inspection to a verified local run. Read the
 
 ## Guardrails
 
-- Treat `/pi` and `/project-init` as the user's explicit shortcuts for this workflow.
+- Treat `/kc-pi` as the user's explicit shortcut for this workflow.
 - Modify as little as possible. Default to no application source edits during initialization.
 - Treat this as a bootstrap and runtime-verification workflow, not as a refactor or cleanup pass.
 - Do not touch databases, migrations, shared packages, or unrelated config unless the user explicitly asks.

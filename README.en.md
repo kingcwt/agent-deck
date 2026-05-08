@@ -18,8 +18,8 @@ You do not need to repeatedly type long prompts such as “analyze the current p
 
 Instead, you keep a short command set such as:
 
-- Codex: `$pi` or `$project-init`
-- Claude Code: `/pi` or `/project-init`
+- Codex: `$kc-pi`
+- Claude Code: `/kc-pi`
 
 The workflow is authored once in a source file and rendered into the formats required by each tool.
 
@@ -31,9 +31,9 @@ Project bootstrap and baseline analysis.
 
 Aliases generated from one source:
 
-- Codex skills: `pi`, `project-init`
-- Claude skills: `pi`, `project-init`
-- Claude commands: `/pi`, `/project-init`
+- Codex skills: `kc-pi`
+- Claude skills: `kc-pi`
+- Claude commands: `/kc-pi`
 
 Purpose:
 
@@ -43,6 +43,24 @@ Purpose:
 - start the main local app or dev server
 - verify readiness
 - summarize the project structure, stack, and blockers
+
+### `git-push`
+
+Commit and push the current repository changes to the remote.
+
+Aliases generated from one source:
+
+- Codex skills: `kc-gp`
+- Claude skills: `kc-gp`
+- Claude commands: `/kc-gp`
+
+Purpose:
+
+- require a commit description after the shortcut
+- inspect the current branch, worktree state, and remotes
+- stage the current repository changes
+- create one git commit
+- push the current branch to the remote repository
 
 ## Repository Structure
 
@@ -85,9 +103,9 @@ display_name: Project Init
 description: ...
 short_description: ...
 default_prompt: ...
-codex_names: pi,project-init
-claude_skill_names: pi,project-init
-claude_commands: pi,project-init
+codex_names: kc-pi
+claude_skill_names: kc-pi
+claude_commands: kc-pi
 allow_implicit_invocation: false
 ---
 ```
@@ -182,13 +200,13 @@ When you change a skill:
 Claude Code supports both reusable skills and slash commands, and they serve different purposes:
 
 - Claude skills are for reusable packaged capability
-- Claude commands provide the shortest invocation path, such as `/pi`
+- Claude commands provide the shortest invocation path, such as `/kc-pi`
 
 This repository generates both from the same source file, so you do not maintain duplicate logic.
 
 ## Notes
 
-- Codex works best with explicit skill invocation such as `$pi`
-- Claude uses `/pi` and `/project-init`
+- Codex works best with explicit skill invocation such as `$kc-pi`
+- Claude uses `/kc-pi`
 - `/init` is intentionally avoided on the Claude command side because it can conflict with built-in command semantics
 - the repository structure is designed to scale to many skills without structural changes

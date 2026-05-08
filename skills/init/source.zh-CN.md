@@ -30,7 +30,7 @@
 
 含义：
 
-初始化并建立当前代码项目的基线。适用于用户输入 `/pi`、`/project-init`、`$pi`、`$project-init`、`pi`，或者表达“检查当前仓库、识别技术栈和包管理器、安装依赖、启动主应用或开发服务、验证服务可达、并输出包含启动说明、配置依赖和阻塞项的项目描述”这类意图的场景。
+初始化并建立当前代码项目的基线。适用于用户输入 `/kc-pi`、`$kc-pi`、`kc-pi`，或者表达“检查当前仓库、识别技术栈和包管理器、安装依赖、启动主应用或开发服务、验证服务可达、并输出包含启动说明、配置依赖和阻塞项的项目描述”这类意图的场景。
 
 ### `short_description`
 
@@ -42,29 +42,29 @@
 
 ### `default_prompt`
 
-`Use $pi to inspect the current project, install dependencies, start it, and summarize how it works.`
+`Use $kc-pi to inspect the current project, install dependencies, start it, and summarize how it works.`
 
 含义：
 
-使用 `$pi` 检查当前项目、安装依赖、启动它，并总结它的工作方式。
+使用 `$kc-pi` 检查当前项目、安装依赖、启动它，并总结它的工作方式。
 
 ### `codex_names`
 
-`pi,project-init`
+`kc-pi`
 
-表示 Codex 侧生成两个技能别名：`pi` 和 `project-init`。
+表示 Codex 侧生成一个技能别名：`kc-pi`。
 
 ### `claude_skill_names`
 
-`pi,project-init`
+`kc-pi`
 
-表示 Claude skill 侧生成两个技能别名：`pi` 和 `project-init`。
+表示 Claude skill 侧生成一个技能别名：`kc-pi`。
 
 ### `claude_commands`
 
-`pi,project-init`
+`kc-pi`
 
-表示 Claude command 侧生成两个命令别名：`/pi` 和 `/project-init`。
+表示 Claude command 侧生成一个命令别名：`/kc-pi`。
 
 ### `allow_implicit_invocation`
 
@@ -121,7 +121,7 @@
 
 ## Guardrails
 
-- 把 `/pi` 和 `/project-init` 视为这个工作流的显式快捷触发词。
+- 把 `/kc-pi` 视为这个工作流的显式快捷触发词。
 - 尽量少改动，默认不修改应用业务源码。
 - 这是一个“启动与验证”工作流，不是重构或清理工作流。
 - 不要碰数据库、迁移、共享包或无关配置，除非用户明确要求。

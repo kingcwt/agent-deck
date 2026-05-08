@@ -1,12 +1,12 @@
 ---
 name: init
 display_name: Project Init
-description: Initialize and baseline the current code project. Use when the user types /pi, /project-init, $pi, $project-init, pi, or asks to inspect the current repository, detect the stack and package manager, install dependencies, start the main local app or dev server, verify it is reachable, and output a detailed project description with startup notes, config dependencies, and blockers.
-short_description: Inspect, install, run, and summarize a codebase
-default_prompt: Use $pi to inspect the current project, install dependencies, start it, and summarize how it works.
-codex_names: pi,project-init
-claude_skill_names: pi,project-init
-claude_commands: pi,project-init
+description: Initialize and baseline the current code project. Use when the user types /kc-pi, $kc-pi, kc-pi, or asks to inspect the current repository, detect the stack and package manager, install dependencies, start the main local app or dev server, verify it is reachable, and output a detailed project description with startup notes, config dependencies, and blockers.
+short_description: Inspect, install, run, and summarize a codebase[检查，安装，运行，总结项目]
+default_prompt: Use $kc-pi to inspect the current project, install dependencies, start it, and summarize how it works.
+codex_names: kc-pi
+claude_skill_names: kc-pi
+claude_commands: kc-pi
 allow_implicit_invocation: false
 ---
 
@@ -60,7 +60,7 @@ Initialize the current project from inspection to a verified local run. Read the
 
 ## Guardrails
 
-- Treat `/pi` and `/project-init` as the user's explicit shortcuts for this workflow.
+- Treat `/kc-pi` as the user's explicit shortcut for this workflow.
 - Modify as little as possible. Default to no application source edits during initialization.
 - Treat this as a bootstrap and runtime-verification workflow, not as a refactor or cleanup pass.
 - Do not touch databases, migrations, shared packages, or unrelated config unless the user explicitly asks.

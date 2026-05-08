@@ -1,4 +1,4 @@
-# /project-init
+# /kc-pi
 
 <!-- This file is generated from skills/*/source.md. Edit the source file instead. -->
 
@@ -55,7 +55,7 @@ Initialize the current project from inspection to a verified local run. Read the
 
 ## Guardrails
 
-- Treat `/pi` and `/project-init` as the user's explicit shortcuts for this workflow.
+- Treat `/kc-pi` as the user's explicit shortcut for this workflow.
 - Modify as little as possible. Default to no application source edits during initialization.
 - Treat this as a bootstrap and runtime-verification workflow, not as a refactor or cleanup pass.
 - Do not touch databases, migrations, shared packages, or unrelated config unless the user explicitly asks.
