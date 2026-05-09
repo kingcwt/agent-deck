@@ -46,8 +46,9 @@ Inspect all current changed files in the repository, generate one short and conc
 - The commit message must not collapse all changes into one sentence.
 - Build a multi-line commit message instead:
   - first line: one short overall summary line for the whole change set
-  - following lines: include the generated per-file descriptions, one file per line
-- Keep the generated per-file lines concrete and readable instead of prefixing them with raw paths unless the path is needed to disambiguate.
+  - following lines: include the generated descriptions, one description per line
+- Do not prefix the generated description lines with file names, file paths, or branch names. Keep those lines as plain descriptions only.
+- Keep the generated description lines concrete and readable, and only mention a file or path inside the sentence when it is truly needed for disambiguation.
 - If the user provides trailing text after `/kc-gdp` or `$kc-gdp`, treat that text as the explicit first summary line, but still append the generated per-file descriptions below it line by line.
 - If the changed files appear unrelated to each other, call that out before committing so the user can redirect if needed.
 
