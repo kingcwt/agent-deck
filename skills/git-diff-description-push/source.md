@@ -17,13 +17,14 @@ allow_implicit_invocation: false
 
 ## Overview
 
-Inspect all current changed files in the repository, generate one short and concrete description per file from the diff and surrounding context, synthesize those descriptions into a multi-line commit message, then stage the current repository changes, create one commit, and push the current branch.
+Inspect all current changed files in the repository, generate one short and concrete description per file from the diff and surrounding context, default those generated descriptions to Chinese unless the user selects English, synthesize those descriptions into a multi-line commit message, then stage the current repository changes, create one commit, and push the current branch.
 
 ## Workflow
 
 ### 1. Inspect the repository state first
 
 - Treat `/kc-gdp` and `$kc-gdp` as explicit shortcuts for this workflow.
+- Support only one optional language flag right after the shortcut: `-e` switches the generated descriptions to English.
 - Read `git status --short`, the current branch name, and the configured remotes before mutating anything.
 - Identify all changed files first, including staged and unstaged tracked changes plus untracked files in the current worktree.
 - If there are no local changes, say so plainly and stop.
@@ -37,6 +38,7 @@ Inspect all current changed files in the repository, generate one short and conc
 - For untracked files, inspect the file content directly and infer the purpose from its name and content.
 - For deleted files, use the removal diff and surrounding references to describe what was removed.
 - Output one short and concrete description per changed file.
+- Default the generated per-file descriptions to Chinese. Only switch them to English when the user explicitly passes `-e`.
 - Prefer wording like `add login button`, `fill in UserSession type`, `adjust order list request params`, or `remove deprecated payment callback`.
 - Avoid vague summaries like `optimize code`, `fix some issues`, or `update logic`.
 
@@ -49,7 +51,9 @@ Inspect all current changed files in the repository, generate one short and conc
   - following lines: include the generated descriptions, one description per line
 - Do not prefix the generated description lines with file names, file paths, or branch names. Keep those lines as plain descriptions only.
 - Keep the generated description lines concrete and readable, and only mention a file or path inside the sentence when it is truly needed for disambiguation.
-- If the user provides trailing text after `/kc-gdp` or `$kc-gdp`, treat that text as the explicit first summary line, but still append the generated per-file descriptions below it line by line.
+- When the first summary line is generated automatically, keep it in the same language as the generated description lines.
+- If the user provides trailing text after `/kc-gdp` or `$kc-gdp`, parse and remove only an exact leading `-e` token when present, then treat the remaining text as the explicit first summary line, and still append the generated per-file descriptions below it line by line.
+- Do not recognize any other flag or parameter as a language switch.
 - If the changed files appear unrelated to each other, call that out before committing so the user can redirect if needed.
 
 Use a structure like:
@@ -60,6 +64,13 @@ feat: add region-manager entry selection flow
 新增登录后的入口选择页
 调整登录后默认跳转到 /entry
 新增地区经理首页路由和权限判断
+
+/kc-gdp -e
+feat: add region-manager entry selection flow
+add version-switch entry in the home avatar menu
+add the post-login entry selection page
+change the default post-login redirect to /entry
+add region-manager home routing and permission checks
 ```
 
 ### 4. Create one commit
