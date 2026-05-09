@@ -1,0 +1,6 @@
+interface:
+  display_name: "Git Diff Description"
+  short_description: "Summarize each changed file in one short, concrete line [逐文件生成简短改动描述]"
+  default_prompt: "Use $kc-gdd to find all current changed files and output one short, concrete description for each file based on its diff and context."
+policy:
+  allow_implicit_invocation: false

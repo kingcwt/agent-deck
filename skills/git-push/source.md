@@ -2,7 +2,7 @@
 name: git-push
 display_name: Git Push
 description: Commit the current repository changes with a required user-provided description and push the current branch to the remote repository. Use when the user types /kc-gp followed by a non-empty description, $kc-gp followed by a non-empty description, kc-gp followed by a non-empty description, or asks to stage the current repo changes, create one git commit, and push that commit to the current branch on the remote.
-short_description: Stage, commit, and push the current repo changes with a required description [带描述地提交并推送当前仓库改动]
+short_description: Fill in the description and submit [填写描述并提交]
 default_prompt: Use $kc-gp <description> to stage the current repository changes, create one commit from the provided description, and push the current branch to its remote.
 codex_names: kc-gp
 claude_skill_names: kc-gp
