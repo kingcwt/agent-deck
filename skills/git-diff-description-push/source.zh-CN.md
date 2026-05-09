@@ -30,7 +30,7 @@
 
 含义：
 
-先逐个为当前仓库的改动文件生成简短、具体的描述，再把这些描述收敛成一条 commit message，最后提交并推送当前分支。适用于用户输入 `/kc-gdp`、`$kc-gdp`、`kc-gdp`，或者明确要求“一边生成改动描述一边提交推送”的场景。
+先逐个为当前仓库的改动文件生成简短、具体的描述，再把这些描述整理成一条“多行”的 commit message，最后提交并推送当前分支。适用于用户输入 `/kc-gdp`、`$kc-gdp`、`kc-gdp`，或者明确要求“一边生成改动描述一边提交推送”的场景。
 
 ### `short_description`
 
@@ -42,11 +42,11 @@
 
 ### `default_prompt`
 
-`Use $kc-gdp to summarize the current changed files, derive one commit message from those descriptions, create one commit, and push the current branch.`
+`Use $kc-gdp to summarize the current changed files, derive a multi-line commit message from those descriptions, create one commit, and push the current branch.`
 
 含义：
 
-使用 `$kc-gdp` 汇总当前改动文件，为这些描述生成一条 commit message，创建一次提交，并推送当前分支。
+使用 `$kc-gdp` 汇总当前改动文件，为这些描述生成一条多行 commit message，创建一次提交，并推送当前分支。
 
 ### `codex_names`
 
@@ -78,7 +78,7 @@
 
 ## Overview
 
-检查当前仓库里的所有改动文件，基于 diff 和必要上下文为每个文件生成一句简短、具体的描述，再把这些描述收敛成一条 commit message，然后暂存当前仓库改动、创建一次提交，并推送当前分支。
+检查当前仓库里的所有改动文件，基于 diff 和必要上下文为每个文件生成一句简短、具体的描述，再把这些描述整理成一条多行 commit message，然后暂存当前仓库改动、创建一次提交，并推送当前分支。
 
 ## Workflow
 
@@ -101,17 +101,32 @@
 - 优先使用类似 `新增登录按钮`、`补充 UserSession 类型`、`调整订单列表请求参数`、`删除废弃支付回调` 这样的表述。
 - 避免 `优化代码`、`修复一些问题`、`更新逻辑` 这类空泛说法。
 
-### 3. 把这些描述收敛成一条 commit message
+### 3. 把这些描述整理成一条多行 commit message
 
 - 以逐文件描述作为 commit message 的来源材料。
-- 把这些描述压缩成一条简洁的提交信息，同时保留真正变动的对象和动作。
-- 如果用户在 `/kc-gdp` 或 `$kc-gdp` 后面追加了文本，就把这段文本视为显式指定的 commit message，但仍然要先生成并展示逐文件描述。
+- 不能把所有改动压成一句话提交信息。
+- 必须生成一条多行 commit message：
+  - 第一行：整个改动集的简短总标题
+  - 后续每一行：写一条逐文件改动描述，每个文件一行
+- 后续这些逐文件描述要尽量具体、可读；除非需要消歧义，否则不要机械地在每行前都带完整文件路径。
+- 如果用户在 `/kc-gdp` 或 `$kc-gdp` 后面追加了文本，就把这段文本视为显式指定的第一行标题，但后面仍然必须逐行追加生成出的逐文件描述。
 - 如果这些改动文件看起来彼此不相关，要在提交前先指出这一点，让用户决定是否继续。
+
+结构示例：
+
+```text
+feat: add region-manager entry selection flow
+新增首页头像菜单里的切换版本入口
+新增登录后的入口选择页
+调整登录后默认跳转到 /entry
+新增地区经理首页路由和权限判断
+```
 
 ### 4. 创建一次提交
 
 - 使用非交互式 git 命令暂存当前仓库改动。
-- 使用推导出的 commit message 或用户显式指定的文案，创建且只创建一个提交。
+- 使用推导出的多行 commit message，或“用户显式指定的第一行 + 自动生成的逐文件描述行”，创建且只创建一个提交。
+- 提交时必须使用能保留换行的非交互式 git 命令。
 - 如果 commit hooks 失败，必须报告失败并停止；除非用户明确要求，否则不要绕过 hook。
 - 如果因为 git 身份未配置或 index 为空导致提交失败，必须精确说明阻塞点并停止。
 

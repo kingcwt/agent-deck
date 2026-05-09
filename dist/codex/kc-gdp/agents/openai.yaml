@@ -1,6 +1,6 @@
 interface:
   display_name: "Git Diff Description Push"
   short_description: "Describe current changes, commit, and push [先生成描述再提交推送]"
-  default_prompt: "Use $kc-gdp to summarize the current changed files, derive one commit message from those descriptions, create one commit, and push the current branch."
+  default_prompt: "Use $kc-gdp to summarize the current changed files, derive a multi-line commit message from those descriptions, create one commit, and push the current branch."
 policy:
   allow_implicit_invocation: false

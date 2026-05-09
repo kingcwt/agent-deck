@@ -12,7 +12,7 @@ Treat this command as the user's explicit shortcut for the workflow below.
 
 ## Overview
 
-Inspect all current changed files in the repository, generate one short and concrete description per file from the diff and surrounding context, synthesize those descriptions into one commit message, then stage the current repository changes, create one commit, and push the current branch.
+Inspect all current changed files in the repository, generate one short and concrete description per file from the diff and surrounding context, synthesize those descriptions into a multi-line commit message, then stage the current repository changes, create one commit, and push the current branch.
 
 ## Workflow
 
@@ -35,17 +35,32 @@ Inspect all current changed files in the repository, generate one short and conc
 - Prefer wording like `add login button`, `fill in UserSession type`, `adjust order list request params`, or `remove deprecated payment callback`.
 - Avoid vague summaries like `optimize code`, `fix some issues`, or `update logic`.
 
-### 3. Turn the descriptions into one commit message
+### 3. Turn the descriptions into one multi-line commit message
 
 - Use the per-file descriptions as the source material for the commit message.
-- Compress them into one concise commit message that preserves the real changed nouns and actions.
-- If the user provides trailing text after `/kc-gdp` or `$kc-gdp`, treat that text as an explicit commit message override, but still generate and show the per-file descriptions first.
+- The commit message must not collapse all changes into one sentence.
+- Build a multi-line commit message instead:
+  - first line: one short overall summary line for the whole change set
+  - following lines: include the generated per-file descriptions, one file per line
+- Keep the generated per-file lines concrete and readable instead of prefixing them with raw paths unless the path is needed to disambiguate.
+- If the user provides trailing text after `/kc-gdp` or `$kc-gdp`, treat that text as the explicit first summary line, but still append the generated per-file descriptions below it line by line.
 - If the changed files appear unrelated to each other, call that out before committing so the user can redirect if needed.
+
+Use a structure like:
+
+```text
+feat: add region-manager entry selection flow
+新增首页头像菜单里的切换版本入口
+新增登录后的入口选择页
+调整登录后默认跳转到 /entry
+新增地区经理首页路由和权限判断
+```
 
 ### 4. Create one commit
 
 - Stage the current repository changes using a non-interactive git command.
-- Create exactly one commit using the derived commit message or the user's explicit override.
+- Create exactly one commit using the derived multi-line commit message or the user's explicit first line plus generated per-file lines.
+- Use a non-interactive git command that preserves line breaks in the final commit message.
 - If commit hooks fail, report the failure and stop. Do not bypass hooks unless the user explicitly asks.
 - If git rejects the commit because identity is missing or the index is empty, report the exact blocker and stop.
 
