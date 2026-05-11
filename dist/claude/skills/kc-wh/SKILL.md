@@ -50,7 +50,7 @@ $kc-wh add 其他 -m"需求评审" -pm
 
 ### 1. Parse the invocation
 
-- Treat `/kc-wh`, `/kc-work-hours`, `$kc-wh`, and `$kc-work-hours` as explicit shortcuts for this workflow.
+- Treat `/kc-wh` and `$kc-wh` as explicit shortcuts for this workflow.
 - If there is no trailing text after the shortcut, run export mode for the last 7 days including today.
 - If the trailing text starts with `add `, parse it as manual-add mode using `add <project> -m"<message>" [-am|-pm]`.
 - If the arguments do not match either supported form, stop and report the supported command formats instead of guessing.

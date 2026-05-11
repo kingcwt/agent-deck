@@ -4,9 +4,9 @@ display_name: Work Hours
 description: Export recent work-hour records from the global agent-deck git commit log, or add a manual work-hour record for today. Use when the user types /kc-wh, /kc-work-hours, $kc-wh, $kc-work-hours, kc-wh, or asks to export recent work hours or append a manual work-hour note such as a meeting entry.
 short_description: Export 7-day work hours or add a manual record [导出近7天工时或补记一条工时]
 default_prompt: Use $kc-wh to export the last 7 days of work-hour records, or use $kc-wh add <project> -m\"<message>\" [-am|-pm] to append a manual work-hour record for today.
-codex_names: kc-wh,kc-work-hours
-claude_skill_names: kc-wh,kc-work-hours
-claude_commands: kc-wh,kc-work-hours
+codex_names: kc-wh
+claude_skill_names: kc-wh
+claude_commands: kc-wh
 allow_implicit_invocation: false
 ---
 
@@ -57,7 +57,7 @@ $kc-wh add 其他 -m"需求评审" -pm
 
 ### 1. Parse the invocation
 
-- Treat `/kc-wh`, `/kc-work-hours`, `$kc-wh`, and `$kc-work-hours` as explicit shortcuts for this workflow.
+- Treat `/kc-wh` and `$kc-wh` as explicit shortcuts for this workflow.
 - If there is no trailing text after the shortcut, run export mode for the last 7 days including today.
 - If the trailing text starts with `add `, parse it as manual-add mode using `add <project> -m"<message>" [-am|-pm]`.
 - If the arguments do not match either supported form, stop and report the supported command formats instead of guessing.

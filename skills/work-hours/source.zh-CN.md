@@ -50,21 +50,21 @@
 
 ### `codex_names`
 
-`kc-wh,kc-work-hours`
+`kc-wh`
 
-表示 Codex 侧生成两个技能别名：`kc-wh` 和 `kc-work-hours`。
+表示 Codex 侧只生成一个技能别名：`kc-wh`。
 
 ### `claude_skill_names`
 
-`kc-wh,kc-work-hours`
+`kc-wh`
 
-表示 Claude skill 侧生成两个技能别名：`kc-wh` 和 `kc-work-hours`。
+表示 Claude skill 侧只生成一个技能别名：`kc-wh`。
 
 ### `claude_commands`
 
-`kc-wh,kc-work-hours`
+`kc-wh`
 
-表示 Claude command 侧生成两个命令别名：`/kc-wh` 和 `/kc-work-hours`。
+表示 Claude command 侧只生成一个命令别名：`/kc-wh`。
 
 ### `allow_implicit_invocation`
 
@@ -118,7 +118,7 @@ $kc-wh add 其他 -m"需求评审" -pm
 
 ### 1. 解析调用形式
 
-- 把 `/kc-wh`、`/kc-work-hours`、`$kc-wh`、`$kc-work-hours` 视为这个工作流的显式快捷触发词。
+- 把 `/kc-wh` 和 `$kc-wh` 视为这个工作流的显式快捷触发词。
 - 如果快捷词后面没有额外文本，就进入默认导出模式，导出包含今天在内的最近 7 天。
 - 如果尾随文本以 `add ` 开头，就按 `add <project> -m"<message>" [-am|-pm]` 解析成手动补记模式。
 - 如果参数既不符合默认导出，也不符合补记格式，就直接报出支持的命令格式，不要自行猜测。
