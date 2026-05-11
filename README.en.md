@@ -238,6 +238,46 @@ $kc-pi
 ```text
 /kc-pi
 ```
+
+### `work-hours`
+
+Description:
+
+Export the last 7 days of work-hour records grouped by day and by AM/PM into a Desktop markdown file, or add one manual work-hour record for today into the global agent-deck work-hour log.
+
+Parameters:
+
+- Default mode: no extra arguments, export the last 7 days including today.
+- Add mode: `add <project> -m"<message>" [-am|-pm]`.
+- Optional `-am`: force the manual record into today's AM bucket.
+- Optional `-pm`: force the manual record into today's PM bucket.
+
+Shortcuts And Commands:
+
+- Codex shortcut: `$kc-wh`
+- Codex full commands: `$kc-wh`, `$kc-wh add <project> -m"<message>" [-am|-pm]`
+- Claude Code shortcut: `/kc-wh`
+- Claude Code full commands: `/kc-wh`, `/kc-wh add <project> -m"<message>" [-am|-pm]`
+
+Examples:
+
+### Codex
+
+```text
+$kc-wh
+$kc-wh add 其他 -m"开会1小时"
+$kc-wh add 其他 -m"开会1小时" -am
+$kc-wh add 其他 -m"需求评审" -pm
+```
+
+### Claude Code
+
+```text
+/kc-wh
+/kc-wh add 其他 -m"开会1小时"
+/kc-wh add 其他 -m"开会1小时" -am
+/kc-wh add 其他 -m"需求评审" -pm
+```
 <!-- END GENERATED SKILLS -->
 
 ## Repository Structure

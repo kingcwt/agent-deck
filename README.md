@@ -238,6 +238,46 @@ $kc-pi
 ```text
 /kc-pi
 ```
+
+### `work-hours`
+
+技能描述：
+
+导出最近 7 天的工时记录，并按天和上午/下午分组写入桌面 markdown 文件；或者向 agent-deck 的全局工时日志里补记一条今天的手动工时记录。
+
+参数：
+
+- 默认模式：不带额外参数，导出包含今天在内的最近 7 天。
+- 补记模式：`add <project> -m"<message>" [-am|-pm]`。
+- 可选 `-am`：强制把手动记录写到今天上午。
+- 可选 `-pm`：强制把手动记录写到今天下午。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-wh`
+- Codex 完整命令：`$kc-wh`、`$kc-wh add <project> -m"<message>" [-am|-pm]`
+- Claude Code 快捷键：`/kc-wh`
+- Claude Code 完整命令：`/kc-wh`、`/kc-wh add <project> -m"<message>" [-am|-pm]`
+
+示例：
+
+### Codex
+
+```text
+$kc-wh
+$kc-wh add 其他 -m"开会1小时"
+$kc-wh add 其他 -m"开会1小时" -am
+$kc-wh add 其他 -m"需求评审" -pm
+```
+
+### Claude Code
+
+```text
+/kc-wh
+/kc-wh add 其他 -m"开会1小时"
+/kc-wh add 其他 -m"开会1小时" -am
+/kc-wh add 其他 -m"需求评审" -pm
+```
 <!-- END GENERATED SKILLS -->
 
 ## 仓库结构

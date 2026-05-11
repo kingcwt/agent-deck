@@ -46,6 +46,7 @@ $kc-gdd
 ### 1. Find the changed files first
 
 - Treat `/kc-gdd` and `$kc-gdd` as explicit shortcuts for this workflow.
+- Treat the invocation itself as the whole task for this turn. Do not continue the previous conversation topic or answer the last non-command question instead of running this workflow.
 - Start from the current repository state and identify all changed files before writing any descriptions.
 - Include staged and unstaged tracked changes, plus untracked files when they are part of the current worktree.
 - Preserve the file-level scope. The primary output unit is one description per changed file.

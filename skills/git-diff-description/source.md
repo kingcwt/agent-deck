@@ -3,7 +3,7 @@ name: git-diff-description
 display_name: Git Diff Description
 description: Describe the current repository's changed files one by one with short, concrete summaries based on each file's git diff and surrounding context. Use when the user types /kc-gdd, $kc-gdd, kc-gdd, or asks to find all current changed files and produce a brief per-file description of what was changed.
 short_description: Summarize each changed file in one short, concrete line [逐文件生成简短改动描述]
-default_prompt: Use $kc-gdd to find all current changed files and output one short, concrete description for each file based on its diff and context.
+default_prompt: Immediately inspect the current repository state for this turn, ignore the previous conversation topic, find every current changed file, and output a flat `path: short description` list based on each file's diff and needed context. If there are no changed files, say so plainly.
 codex_names: kc-gdd
 claude_skill_names: kc-gdd
 claude_commands: kc-gdd
@@ -51,6 +51,7 @@ $kc-gdd
 ### 1. Find the changed files first
 
 - Treat `/kc-gdd` and `$kc-gdd` as explicit shortcuts for this workflow.
+- Treat the invocation itself as the whole task for this turn. Do not continue the previous conversation topic or answer the last non-command question instead of running this workflow.
 - Start from the current repository state and identify all changed files before writing any descriptions.
 - Include staged and unstaged tracked changes, plus untracked files when they are part of the current worktree.
 - Preserve the file-level scope. The primary output unit is one description per changed file.

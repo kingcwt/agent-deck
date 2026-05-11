@@ -7,6 +7,9 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Re-render generated artifacts from the single-source skill files.
 python3 "$ROOT_DIR/scripts/render_skills.py"
 
+# Install the global kc-wh storage, CLI, and chained post-commit hook.
+bash "$ROOT_DIR/scripts/install_workhours.sh"
+
 # Remove retired bootstrap aliases so old entries do not linger in user installs.
 rm -rf "$HOME/.codex/skills/init"
 rm -rf "$HOME/.codex/skills/pi"
@@ -43,4 +46,4 @@ for skill_dir in "$ROOT_DIR"/dist/claude/skills/*; do
   cp -R "$skill_dir" "$HOME/.claude/skills/$skill_name"
 done
 
-echo "Synced skills to ~/.codex/skills, ~/.claude/skills, and ~/.claude/commands"
+echo "Synced skills, commands, and kc-wh global workhours storage"

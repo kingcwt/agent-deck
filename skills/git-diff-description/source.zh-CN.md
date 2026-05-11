@@ -42,11 +42,11 @@
 
 ### `default_prompt`
 
-`Use $kc-gdd to find all current changed files and output one short, concrete description for each file based on its diff and context.`
+`Immediately inspect the current repository state for this turn, ignore the previous conversation topic, find every current changed file, and output a flat \`path: short description\` list based on each file's diff and needed context. If there are no changed files, say so plainly.`
 
 含义：
 
-使用 `$kc-gdd` 找到当前所有改动文件，并基于各自的 diff 和上下文，为每个文件输出一句简短、具体的描述。
+本轮立即检查当前仓库状态，忽略上一段对话话题，找出所有当前改动文件，并基于每个文件的 diff 和必要上下文，按 `path: short description` 的扁平格式输出结果。如果没有改动文件，就直接说明。
 
 ### `codex_names`
 
@@ -112,6 +112,7 @@ $kc-gdd
 ### 1. 先找出所有改动文件
 
 - 把 `/kc-gdd` 和 `$kc-gdd` 视为这个工作流的显式快捷触发词。
+- 把这次触发本身当作本轮唯一任务，不要继续上一段对话话题，也不要拿它去回答上一个非命令问题。
 - 从当前仓库状态开始，在写任何描述之前先识别出所有改动文件。
 - 包含 staged 和 unstaged 的已跟踪改动，也包含当前工作区里的 untracked 文件。
 - 保持文件级粒度，主要输出单位是“每个改动文件一条描述”。
