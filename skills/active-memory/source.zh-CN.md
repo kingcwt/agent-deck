@@ -76,9 +76,37 @@
 
 # Active Memory
 
-## Overview
+## Description
 
-把最近一轮已经完成的用户与助手对话整理成一条结构化记忆，并写入当前项目根目录的 `active-memory.md`。如果文件不存在就创建；如果已存在就在末尾追加新条目。
+把最近一轮已经完成的用户-助手对话写入当前项目的 `active-memory.md`，形成一条结构化记忆。
+
+## Parameters
+
+- 必填：无。
+- 来源范围：当前快捷调用之前最近一轮已经完成的用户-助手对话。
+- 输出文件：项目根目录下的 `active-memory.md`。
+- 可选参数：无。
+
+## Shortcuts And Commands
+
+- Codex 快捷键：`$kc-am`
+- Codex 完整命令：`$kc-am`
+- Claude Code 快捷键：`/kc-am`
+- Claude Code 完整命令：`/kc-am`
+
+## Examples
+
+### Codex
+
+```text
+$kc-am
+```
+
+### Claude Code
+
+```text
+/kc-am
+```
 
 ## Workflow
 

@@ -25,50 +25,229 @@ The workflow is authored once in a source file and rendered into the formats req
 
 ## Current Skill Set
 
-### `init`
+This block is auto-synced by `scripts/render_skills.py` from `skills/*/source.md` and `skills/*/source.zh-CN.md`.
 
-Project bootstrap and baseline analysis.
+<!-- BEGIN GENERATED SKILLS -->
+### `active-memory`
 
-Aliases generated from one source:
+Description:
 
-- Codex skills: `kc-pi`
-- Claude skills: `kc-pi`
-- Claude commands: `/kc-pi`
+Write the most recent completed user-assistant exchange into the current project's `active-memory.md` as one structured memory entry.
 
-Purpose:
+Parameters:
 
-- inspect the current project
-- detect the package manager and runtime shape
-- install dependencies
-- start the main local app or dev server
-- verify readiness
-- summarize the project structure, stack, and blockers
+- Required: none.
+- Source scope: the most recent completed user-assistant exchange before the shortcut invocation.
+- Output file: the project root `active-memory.md`.
+- Optional flags: none.
+
+Shortcuts And Commands:
+
+- Codex shortcut: `$kc-am`
+- Codex full command: `$kc-am`
+- Claude Code shortcut: `/kc-am`
+- Claude Code full command: `/kc-am`
+
+Examples:
+
+### Codex
+
+```text
+$kc-am
+```
+
+### Claude Code
+
+```text
+/kc-am
+```
+
+### `diff-review`
+
+Description:
+
+Review only the current file's git changes, explain what each change is doing, and judge whether the change is necessary and minimal.
+
+Parameters:
+
+- Required: none.
+- Review target: exactly one current file with git changes.
+- Optional flags: none.
+- Not supported by default: repository-wide diff review, multi-file batching, or automatic code fixes.
+
+Shortcuts And Commands:
+
+- Codex shortcuts: `$df`, `$diff-review`
+- Codex full commands: `$df`, `$diff-review`
+- Claude Code shortcuts: `/df`, `/diff-review`
+- Claude Code full commands: `/df`, `/diff-review`
+
+Examples:
+
+### Codex
+
+```text
+$df
+$diff-review
+```
+
+### Claude Code
+
+```text
+/df
+/diff-review
+```
+
+### `git-diff-description`
+
+Description:
+
+Read the current repository diff and output one short, concrete description for each changed file.
+
+Parameters:
+
+- Required: none.
+- Optional flags: none.
+- Output: one short, concrete description per changed file.
+
+Shortcuts And Commands:
+
+- Codex shortcut: `$kc-gdd`
+- Codex full command: `$kc-gdd`
+- Claude Code shortcut: `/kc-gdd`
+- Claude Code full command: `/kc-gdd`
+
+Examples:
+
+### Codex
+
+```text
+$kc-gdd
+```
+
+### Claude Code
+
+```text
+/kc-gdd
+```
+
+### `git-diff-description-push`
+
+Description:
+
+Read the current repository diff, generate one short description per changed file, build a multi-line commit message from those descriptions, then commit and push the current branch. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
+
+Parameters:
+
+- Required: none.
+- Optional `-e`: switch generated descriptions and summary line to English.
+- Optional `[summary line]`: use the trailing text as the first line of the commit message.
+- Supported format: `[-e] [summary line]`.
+
+Shortcuts And Commands:
+
+- Codex shortcut: `$kc-gdp`
+- Codex full command: `$kc-gdp [-e] [summary line]`
+- Claude Code shortcut: `/kc-gdp`
+- Claude Code full command: `/kc-gdp [-e] [summary line]`
+
+Examples:
+
+### Codex
+
+```text
+$kc-gdp
+$kc-gdp feat: add region-manager entry selection flow
+$kc-gdp -e
+$kc-gdp -e feat: add region-manager entry selection flow
+```
+
+### Claude Code
+
+```text
+/kc-gdp
+/kc-gdp feat: add region-manager entry selection flow
+/kc-gdp -e
+/kc-gdp -e feat: add region-manager entry selection flow
+```
 
 ### `git-push`
 
-Commit and push the current repository changes to the remote.
+Description:
 
-Aliases generated from one source:
+Commit the current repository changes with a required description, then push the current branch to the configured remote.
 
-- Codex skills: `kc-gp`
-- Claude skills: `kc-gp`
-- Claude commands: `/kc-gp`
+Parameters:
 
-Purpose:
+- Required: `<description>`, used as the commit message.
+- Optional flags: none.
+- Not supported by default: `--amend`, force-push, branch switching, or splitting into multiple commits.
 
-- require a commit description after the shortcut
-- inspect the current branch, worktree state, and remotes
-- stage the current repository changes
-- create one git commit
-- push the current branch to the remote repository
+Shortcuts And Commands:
+
+- Codex shortcut: `$kc-gp`
+- Codex full command: `$kc-gp <description>`
+- Claude Code shortcut: `/kc-gp`
+- Claude Code full command: `/kc-gp <description>`
+
+Examples:
+
+### Codex
+
+```text
+$kc-gp fix login redirect after auth refresh
+$kc-gp feat: add region-manager entry selection page
+```
+
+### Claude Code
+
+```text
+/kc-gp fix login redirect after auth refresh
+/kc-gp chore: sync generated skill docs
+```
+
+### `init`
+
+Description:
+
+Inspect the current project, install dependencies, start the main local process, verify it, and summarize how the project runs.
+
+Parameters:
+
+- Required: none.
+- Optional flags: none.
+- Working scope: the current repository or workspace only.
+
+Shortcuts And Commands:
+
+- Codex shortcut: `$kc-pi`
+- Codex full command: `$kc-pi`
+- Claude Code shortcut: `/kc-pi`
+- Claude Code full command: `/kc-pi`
+
+Examples:
+
+### Codex
+
+```text
+$kc-pi
+```
+
+### Claude Code
+
+```text
+/kc-pi
+```
+<!-- END GENERATED SKILLS -->
 
 ## Repository Structure
 
 ```text
 agent-deck/
 ├── skills/
-│   └── init/
-│       └── source.md
+│   └── <skill-name>/
+│       ├── source.md
+│       └── source.zh-CN.md
 ├── scripts/
 │   ├── render_skills.py
 │   └── sync.sh
@@ -82,7 +261,8 @@ agent-deck/
 
 Directory meanings:
 
-- `skills/*/source.md`: the only manually maintained source file for a skill
+- `skills/*/source.md`: the executable source of truth for a skill
+- `skills/*/source.zh-CN.md`: the paired Chinese reading translation
 - `scripts/render_skills.py`: renders source files into publishable artifacts
 - `scripts/sync.sh`: regenerates and installs artifacts into local Codex / Claude directories
 - `dist/`: generated output; commit it for remote installs and public distribution
@@ -92,7 +272,7 @@ Directory meanings:
 
 ## Authoring Model
 
-Each skill is defined exactly once in `source.md`.
+Each skill is defined exactly once for execution in `source.md`, with a paired reading translation in `source.zh-CN.md`.
 
 Metadata example:
 
@@ -112,6 +292,8 @@ allow_implicit_invocation: false
 
 This lets one workflow expand into multiple aliases without duplicating the body.
 
+The README skill catalog is generated from those source documents instead of being maintained by hand.
+
 ## Local Development
 
 Render and install locally:
@@ -124,6 +306,7 @@ cd ~/Desktop/kingcwt/work/agent-deck
 This command will:
 
 - rebuild `dist/`
+- refresh the skill catalogs inside `README.md` and `README.en.md`
 - install Codex skills to `~/.codex/skills`
 - install Claude skills to `~/.claude/skills`
 - install Claude commands to `~/.claude/commands`
@@ -172,10 +355,11 @@ If you use the remote installer path, simply run the same `curl ... | bash` comm
 When you change a skill:
 
 1. edit `skills/*/source.md`
-2. run `./scripts/sync.sh`
-3. test in Codex and Claude Code
-4. commit both the source files and generated `dist/`
-5. push to GitHub
+2. update the matching `skills/*/source.zh-CN.md`
+3. run `./scripts/sync.sh`
+4. test in Codex and Claude Code
+5. commit the source files, refreshed README files, and generated `dist/`
+6. push to GitHub
 
 `dist/` is committed on purpose because:
 
@@ -186,14 +370,15 @@ When you change a skill:
 ## Add a New Skill
 
 1. create `skills/<new-skill>/source.md`
-2. copy an existing skill as a template
-3. update metadata and body
-4. choose aliases:
+2. create the matching `skills/<new-skill>/source.zh-CN.md`
+3. copy an existing skill as a template
+4. update metadata and body
+5. choose aliases:
    - `codex_names: foo,bar`
    - `claude_skill_names: foo,bar`
    - `claude_commands: foo,bar`
-5. run `./scripts/sync.sh`
-6. commit source and regenerated `dist/`
+6. run `./scripts/sync.sh`
+7. commit source, refreshed README files, and regenerated `dist/`
 
 ## Why Claude Has Both Skills And Commands
 

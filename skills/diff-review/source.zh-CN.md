@@ -76,9 +76,39 @@
 
 # Diff Review
 
-## Overview
+## Description
 
-在相信当前编辑器文件且仅该文件的 git 改动之前先做审阅。先列出这个文件里的改动代码，再解释这个文件里的每个改动点做了什么、为什么改、依赖哪些周边引用和项目上下文、是否有必要，以及这次改动是否保持了最小且有依据的范围。
+只审查当前文件的 git 改动，解释每个改动在做什么，并判断这次修改是否必要、是否足够克制。
+
+## Parameters
+
+- 必填：无。
+- 审查目标：必须且只能是一个带有 git 改动的当前文件。
+- 可选参数：无。
+- 默认不支持：全仓 diff 审查、多文件批量审查、自动修代码。
+
+## Shortcuts And Commands
+
+- Codex 快捷键：`$df`、`$diff-review`
+- Codex 完整命令：`$df`、`$diff-review`
+- Claude Code 快捷键：`/df`、`/diff-review`
+- Claude Code 完整命令：`/df`、`/diff-review`
+
+## Examples
+
+### Codex
+
+```text
+$df
+$diff-review
+```
+
+### Claude Code
+
+```text
+/df
+/diff-review
+```
 
 ## Workflow
 

@@ -76,9 +76,38 @@
 
 # Git Push
 
-## Overview
+## Description
 
-暂存当前仓库改动，使用快捷词后面提供的描述创建一次 git 提交，并把当前分支推送到已配置的远程分支。
+把当前仓库改动用必填描述创建一次提交，然后把当前分支推送到已配置远程。
+
+## Parameters
+
+- 必填：`<description>`，作为 commit message 使用。
+- 可选参数：无。
+- 默认不支持：`--amend`、强推、切分支、把改动拆成多个提交。
+
+## Shortcuts And Commands
+
+- Codex 快捷键：`$kc-gp`
+- Codex 完整命令：`$kc-gp <description>`
+- Claude Code 快捷键：`/kc-gp`
+- Claude Code 完整命令：`/kc-gp <description>`
+
+## Examples
+
+### Codex
+
+```text
+$kc-gp fix login redirect after auth refresh
+$kc-gp feat: add region-manager entry selection page
+```
+
+### Claude Code
+
+```text
+/kc-gp fix login redirect after auth refresh
+/kc-gp chore: sync generated skill docs
+```
 
 ## Workflow
 

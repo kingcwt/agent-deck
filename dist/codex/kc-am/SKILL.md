@@ -8,9 +8,37 @@ description: Summarize the most recent completed user-assistant exchange into a 
 
 # Active Memory
 
-## Overview
+## Description
 
-Take the most recent completed user-assistant exchange, convert it into one structured memory entry, then write that entry into `active-memory.md` at the current project root. If the file does not exist, create it. If it already exists, append a new entry at the end.
+Write the most recent completed user-assistant exchange into the current project's `active-memory.md` as one structured memory entry.
+
+## Parameters
+
+- Required: none.
+- Source scope: the most recent completed user-assistant exchange before the shortcut invocation.
+- Output file: the project root `active-memory.md`.
+- Optional flags: none.
+
+## Shortcuts And Commands
+
+- Codex shortcut: `$kc-am`
+- Codex full command: `$kc-am`
+- Claude Code shortcut: `/kc-am`
+- Claude Code full command: `/kc-am`
+
+## Examples
+
+### Codex
+
+```text
+$kc-am
+```
+
+### Claude Code
+
+```text
+/kc-am
+```
 
 ## Workflow
 

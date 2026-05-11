@@ -10,9 +10,38 @@ Treat this command as the user's explicit shortcut for the workflow below.
 
 # Git Push
 
-## Overview
+## Description
 
-Stage the current repository changes, create one git commit using the description supplied after the shortcut, and push the current branch to the configured remote branch.
+Commit the current repository changes with a required description, then push the current branch to the configured remote.
+
+## Parameters
+
+- Required: `<description>`, used as the commit message.
+- Optional flags: none.
+- Not supported by default: `--amend`, force-push, branch switching, or splitting into multiple commits.
+
+## Shortcuts And Commands
+
+- Codex shortcut: `$kc-gp`
+- Codex full command: `$kc-gp <description>`
+- Claude Code shortcut: `/kc-gp`
+- Claude Code full command: `/kc-gp <description>`
+
+## Examples
+
+### Codex
+
+```text
+$kc-gp fix login redirect after auth refresh
+$kc-gp feat: add region-manager entry selection page
+```
+
+### Claude Code
+
+```text
+/kc-gp fix login redirect after auth refresh
+/kc-gp chore: sync generated skill docs
+```
 
 ## Workflow
 

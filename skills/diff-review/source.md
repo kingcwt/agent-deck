@@ -15,9 +15,39 @@ allow_implicit_invocation: false
 
 # Diff Review
 
-## Overview
+## Description
 
-Review only the current editor file's git changes before trusting them. Start by listing the changed code from that file, then explain what each change point is doing, why it was changed, what surrounding references and project context it depends on, whether the change is necessary, and whether the scope stays minimal and justified.
+Review only the current file's git changes, explain what each change is doing, and judge whether the change is necessary and minimal.
+
+## Parameters
+
+- Required: none.
+- Review target: exactly one current file with git changes.
+- Optional flags: none.
+- Not supported by default: repository-wide diff review, multi-file batching, or automatic code fixes.
+
+## Shortcuts And Commands
+
+- Codex shortcuts: `$df`, `$diff-review`
+- Codex full commands: `$df`, `$diff-review`
+- Claude Code shortcuts: `/df`, `/diff-review`
+- Claude Code full commands: `/df`, `/diff-review`
+
+## Examples
+
+### Codex
+
+```text
+$df
+$diff-review
+```
+
+### Claude Code
+
+```text
+/df
+/diff-review
+```
 
 ## Workflow
 

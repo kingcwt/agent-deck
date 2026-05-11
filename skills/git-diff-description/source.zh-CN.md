@@ -76,9 +76,36 @@
 
 # Git Diff Description
 
-## Overview
+## Description
 
-检查当前仓库里的所有改动文件，逐个读取每个文件的 diff，并补充理解该改动所需的最小上下文，然后为每个文件输出一句简短、具体的描述。目标是说清楚“做了什么”，而不是写审查意见、commit message 或长篇解释。
+读取当前仓库改动，并为每个改动文件输出一句简短、具体的描述。
+
+## Parameters
+
+- 必填：无。
+- 可选参数：无。
+- 输出：每个改动文件一条简短、具体的描述。
+
+## Shortcuts And Commands
+
+- Codex 快捷键：`$kc-gdd`
+- Codex 完整命令：`$kc-gdd`
+- Claude Code 快捷键：`/kc-gdd`
+- Claude Code 完整命令：`/kc-gdd`
+
+## Examples
+
+### Codex
+
+```text
+$kc-gdd
+```
+
+### Claude Code
+
+```text
+/kc-gdd
+```
 
 ## Workflow
 

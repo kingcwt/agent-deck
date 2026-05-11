@@ -25,50 +25,229 @@
 
 ## 当前已有技能
 
-### `init`
+下面这段由 `scripts/render_skills.py` 根据 `skills/*/source.md` 和 `skills/*/source.zh-CN.md` 自动同步。
 
-用于项目初始化和基线分析。
+<!-- BEGIN GENERATED SKILLS -->
+### `active-memory`
 
-同一个源文件会生成这些别名：
+技能描述：
 
-- Codex skills：`kc-pi`
-- Claude skills：`kc-pi`
-- Claude commands：`/kc-pi`
+把最近一轮已经完成的用户-助手对话写入当前项目的 `active-memory.md`，形成一条结构化记忆。
 
-用途：
+参数：
 
-- 检查当前项目结构
-- 识别包管理器和运行方式
-- 安装依赖
-- 启动主应用或开发服务
-- 验证是否可访问
-- 输出项目结构、技术栈和阻塞项说明
+- 必填：无。
+- 来源范围：当前快捷调用之前最近一轮已经完成的用户-助手对话。
+- 输出文件：项目根目录下的 `active-memory.md`。
+- 可选参数：无。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-am`
+- Codex 完整命令：`$kc-am`
+- Claude Code 快捷键：`/kc-am`
+- Claude Code 完整命令：`/kc-am`
+
+示例：
+
+### Codex
+
+```text
+$kc-am
+```
+
+### Claude Code
+
+```text
+/kc-am
+```
+
+### `diff-review`
+
+技能描述：
+
+只审查当前文件的 git 改动，解释每个改动在做什么，并判断这次修改是否必要、是否足够克制。
+
+参数：
+
+- 必填：无。
+- 审查目标：必须且只能是一个带有 git 改动的当前文件。
+- 可选参数：无。
+- 默认不支持：全仓 diff 审查、多文件批量审查、自动修代码。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$df`、`$diff-review`
+- Codex 完整命令：`$df`、`$diff-review`
+- Claude Code 快捷键：`/df`、`/diff-review`
+- Claude Code 完整命令：`/df`、`/diff-review`
+
+示例：
+
+### Codex
+
+```text
+$df
+$diff-review
+```
+
+### Claude Code
+
+```text
+/df
+/diff-review
+```
+
+### `git-diff-description`
+
+技能描述：
+
+读取当前仓库改动，并为每个改动文件输出一句简短、具体的描述。
+
+参数：
+
+- 必填：无。
+- 可选参数：无。
+- 输出：每个改动文件一条简短、具体的描述。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-gdd`
+- Codex 完整命令：`$kc-gdd`
+- Claude Code 快捷键：`/kc-gdd`
+- Claude Code 完整命令：`/kc-gdd`
+
+示例：
+
+### Codex
+
+```text
+$kc-gdd
+```
+
+### Claude Code
+
+```text
+/kc-gdd
+```
+
+### `git-diff-description-push`
+
+技能描述：
+
+读取当前仓库改动，为每个改动文件生成一句简短描述，把这些描述整理成多行 commit message，然后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
+
+参数：
+
+- 必填：无。
+- 可选 `-e`：把生成描述和总标题切换成英文。
+- 可选 `[summary line]`：把尾随文本作为 commit message 第一行。
+- 支持格式：`[-e] [summary line]`。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-gdp`
+- Codex 完整命令：`$kc-gdp [-e] [summary line]`
+- Claude Code 快捷键：`/kc-gdp`
+- Claude Code 完整命令：`/kc-gdp [-e] [summary line]`
+
+示例：
+
+### Codex
+
+```text
+$kc-gdp
+$kc-gdp feat: add region-manager entry selection flow
+$kc-gdp -e
+$kc-gdp -e feat: add region-manager entry selection flow
+```
+
+### Claude Code
+
+```text
+/kc-gdp
+/kc-gdp feat: add region-manager entry selection flow
+/kc-gdp -e
+/kc-gdp -e feat: add region-manager entry selection flow
+```
 
 ### `git-push`
 
-用于把当前仓库改动提交并推送到远程。
+技能描述：
 
-同一个源文件会生成这些别名：
+把当前仓库改动用必填描述创建一次提交，然后把当前分支推送到已配置远程。
 
-- Codex skills：`kc-gp`
-- Claude skills：`kc-gp`
-- Claude commands：`/kc-gp`
+参数：
 
-用途：
+- 必填：`<description>`，作为 commit message 使用。
+- 可选参数：无。
+- 默认不支持：`--amend`、强推、切分支、把改动拆成多个提交。
 
-- 要求快捷词后必须带提交说明
-- 检查当前分支、工作区状态和远程配置
-- 暂存当前仓库改动
-- 创建一次 git 提交
-- 把当前分支推送到远程仓库
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-gp`
+- Codex 完整命令：`$kc-gp <description>`
+- Claude Code 快捷键：`/kc-gp`
+- Claude Code 完整命令：`/kc-gp <description>`
+
+示例：
+
+### Codex
+
+```text
+$kc-gp fix login redirect after auth refresh
+$kc-gp feat: add region-manager entry selection page
+```
+
+### Claude Code
+
+```text
+/kc-gp fix login redirect after auth refresh
+/kc-gp chore: sync generated skill docs
+```
+
+### `init`
+
+技能描述：
+
+检查当前项目、安装依赖、启动主进程、完成验证，并总结这个项目如何运行。
+
+参数：
+
+- 必填：无。
+- 可选参数：无。
+- 工作范围：仅限当前仓库或当前工作区。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-pi`
+- Codex 完整命令：`$kc-pi`
+- Claude Code 快捷键：`/kc-pi`
+- Claude Code 完整命令：`/kc-pi`
+
+示例：
+
+### Codex
+
+```text
+$kc-pi
+```
+
+### Claude Code
+
+```text
+/kc-pi
+```
+<!-- END GENERATED SKILLS -->
 
 ## 仓库结构
 
 ```text
 agent-deck/
 ├── skills/
-│   └── init/
-│       └── source.md
+│   └── <skill-name>/
+│       ├── source.md
+│       └── source.zh-CN.md
 ├── scripts/
 │   ├── render_skills.py
 │   └── sync.sh
@@ -82,7 +261,8 @@ agent-deck/
 
 各目录含义：
 
-- `skills/*/source.md`：技能唯一人工维护源文件
+- `skills/*/source.md`：技能唯一执行源文件
+- `skills/*/source.zh-CN.md`：和执行源一一对应的中文阅读说明
 - `scripts/render_skills.py`：把源文件渲染成发布产物
 - `scripts/sync.sh`：本地重新生成并安装到 Codex / Claude 目录
 - `dist/`：生成产物；为了远程安装和公开发布，应该提交到 GitHub
@@ -92,7 +272,7 @@ agent-deck/
 
 ## 编写模型
 
-每个技能只定义一次，写在 `source.md` 中。
+每个技能只定义一次，执行源写在 `source.md` 中；中文对照说明写在 `source.zh-CN.md` 中。
 
 元数据示例：
 
@@ -112,6 +292,8 @@ allow_implicit_invocation: false
 
 这样一个工作流就可以展开成多个别名，不需要复制正文。
 
+README 里的“当前已有技能”目录不会再手写维护，而是从技能源说明自动同步。
+
 ## 本地开发
 
 本地渲染并安装：
@@ -124,6 +306,7 @@ cd ~/Desktop/kingcwt/work/agent-deck
 这个命令会：
 
 - 重建 `dist/`
+- 刷新 `README.md` 和 `README.en.md` 里的技能目录
 - 安装 Codex skills 到 `~/.codex/skills`
 - 安装 Claude skills 到 `~/.claude/skills`
 - 安装 Claude commands 到 `~/.claude/commands`
@@ -172,10 +355,11 @@ git pull
 当你修改某个技能时：
 
 1. 编辑 `skills/*/source.md`
-2. 运行 `./scripts/sync.sh`
-3. 在 Codex 和 Claude Code 中测试
-4. 提交源文件和生成后的 `dist/`
-5. 推送到 GitHub
+2. 同步更新对应的 `skills/*/source.zh-CN.md`
+3. 运行 `./scripts/sync.sh`
+4. 在 Codex 和 Claude Code 中测试
+5. 提交源文件、更新后的 README 和生成后的 `dist/`
+6. 推送到 GitHub
 
 之所以提交 `dist/`，是因为：
 
@@ -186,14 +370,15 @@ git pull
 ## 新增一个技能
 
 1. 新建 `skills/<new-skill>/source.md`
-2. 复制现有技能作为模板
-3. 修改元数据和正文
-4. 配置别名：
+2. 新建对应的 `skills/<new-skill>/source.zh-CN.md`
+3. 复制现有技能作为模板
+4. 修改元数据和正文
+5. 配置别名：
    - `codex_names: foo,bar`
    - `claude_skill_names: foo,bar`
    - `claude_commands: foo,bar`
-5. 运行 `./scripts/sync.sh`
-6. 提交源文件和新的 `dist/`
+6. 运行 `./scripts/sync.sh`
+7. 提交源文件、README 更新和新的 `dist/`
 
 ## 为什么 Claude 同时有 skills 和 commands
 

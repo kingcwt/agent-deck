@@ -76,9 +76,36 @@
 
 # Init
 
-## Overview
+## Description
 
-从项目检查开始，一直到本地成功运行并完成验证，建立当前项目的初始化基线。先阅读仓库，再安装依赖、启动主进程、验证结果，最后总结项目是什么以及它如何工作。
+检查当前项目、安装依赖、启动主进程、完成验证，并总结这个项目如何运行。
+
+## Parameters
+
+- 必填：无。
+- 可选参数：无。
+- 工作范围：仅限当前仓库或当前工作区。
+
+## Shortcuts And Commands
+
+- Codex 快捷键：`$kc-pi`
+- Codex 完整命令：`$kc-pi`
+- Claude Code 快捷键：`/kc-pi`
+- Claude Code 完整命令：`/kc-pi`
+
+## Examples
+
+### Codex
+
+```text
+$kc-pi
+```
+
+### Claude Code
+
+```text
+/kc-pi
+```
 
 ## Workflow
 

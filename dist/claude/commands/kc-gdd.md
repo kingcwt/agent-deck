@@ -10,9 +10,36 @@ Treat this command as the user's explicit shortcut for the workflow below.
 
 # Git Diff Description
 
-## Overview
+## Description
 
-Inspect all current changed files in the repository, read each file's diff together with enough local context to understand the change, then output one short and concrete description per file. The goal is to say what was done, not to write a review, commit message, or long explanation.
+Read the current repository diff and output one short, concrete description for each changed file.
+
+## Parameters
+
+- Required: none.
+- Optional flags: none.
+- Output: one short, concrete description per changed file.
+
+## Shortcuts And Commands
+
+- Codex shortcut: `$kc-gdd`
+- Codex full command: `$kc-gdd`
+- Claude Code shortcut: `/kc-gdd`
+- Claude Code full command: `/kc-gdd`
+
+## Examples
+
+### Codex
+
+```text
+$kc-gdd
+```
+
+### Claude Code
+
+```text
+/kc-gdd
+```
 
 ## Workflow
 

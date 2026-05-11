@@ -1,6 +1,6 @@
 interface:
   display_name: "Git Push"
-  short_description: "Stage, commit, and push the current repo changes with a required description [带描述地提交并推送当前仓库改动]"
+  short_description: "Fill in the description and submit [填写描述并提交]"
   default_prompt: "Use $kc-gp <description> to stage the current repository changes, create one commit from the provided description, and push the current branch to its remote."
 policy:
   allow_implicit_invocation: false

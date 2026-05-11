@@ -10,9 +10,36 @@ Treat this command as the user's explicit shortcut for the workflow below.
 
 # Init
 
-## Overview
+## Description
 
-Initialize the current project from inspection to a verified local run. Read the repo first, then install dependencies, start the primary local process, verify the result, and summarize what the project is and how it works.
+Inspect the current project, install dependencies, start the main local process, verify it, and summarize how the project runs.
+
+## Parameters
+
+- Required: none.
+- Optional flags: none.
+- Working scope: the current repository or workspace only.
+
+## Shortcuts And Commands
+
+- Codex shortcut: `$kc-pi`
+- Codex full command: `$kc-pi`
+- Claude Code shortcut: `/kc-pi`
+- Claude Code full command: `/kc-pi`
+
+## Examples
+
+### Codex
+
+```text
+$kc-pi
+```
+
+### Claude Code
+
+```text
+/kc-pi
+```
 
 ## Workflow
 

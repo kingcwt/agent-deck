@@ -76,9 +76,43 @@
 
 # Git Diff Description Push
 
-## Overview
+## Description
 
-检查当前仓库里的所有改动文件，基于 diff 和必要上下文为每个文件生成一句简短、具体的描述；这些生成出来的描述默认使用中文，除非用户显式选择英文。然后把这些描述整理成一条多行 commit message，暂存当前仓库改动、创建一次提交，并推送当前分支。
+读取当前仓库改动，为每个改动文件生成一句简短描述，把这些描述整理成多行 commit message，然后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
+
+## Parameters
+
+- 必填：无。
+- 可选 `-e`：把生成描述和总标题切换成英文。
+- 可选 `[summary line]`：把尾随文本作为 commit message 第一行。
+- 支持格式：`[-e] [summary line]`。
+
+## Shortcuts And Commands
+
+- Codex 快捷键：`$kc-gdp`
+- Codex 完整命令：`$kc-gdp [-e] [summary line]`
+- Claude Code 快捷键：`/kc-gdp`
+- Claude Code 完整命令：`/kc-gdp [-e] [summary line]`
+
+## Examples
+
+### Codex
+
+```text
+$kc-gdp
+$kc-gdp feat: add region-manager entry selection flow
+$kc-gdp -e
+$kc-gdp -e feat: add region-manager entry selection flow
+```
+
+### Claude Code
+
+```text
+/kc-gdp
+/kc-gdp feat: add region-manager entry selection flow
+/kc-gdp -e
+/kc-gdp -e feat: add region-manager entry selection flow
+```
 
 ## Workflow
 
@@ -87,59 +121,33 @@
 - 把 `/kc-gdp` 和 `$kc-gdp` 视为这个工作流的显式快捷触发词。
 - 只支持一个可选语言参数，并且必须紧跟在快捷词后面：`-e` 表示把生成描述切换成英文。
 - 在执行任何修改前，先读取 `git status --short`、当前分支名和已配置的远程信息。
-- 先识别所有改动文件，包含 staged 和 unstaged 的已跟踪改动，也包含当前工作区里的 untracked 文件。
+- 先识别所有改动文件，包含 staged、unstaged 和 untracked 文件。
 - 如果本地没有任何改动，直接说明并停止。
 - 如果没有可用远程，或者当前分支暂时不能推送，必须先说明阻塞原因，再停止，不能先创建提交。
 
-### 2. 为每个文件生成简短描述
+### 2. 为每个改动文件生成一句简短描述
 
-- 对每个改动文件，先检查它自己的 git diff。
-- 如果仅看 diff 还不足以判断改动内容，就继续阅读该文件当前内容。
-- 只补充理解这个改动所必需的最近邻代码或引用。
-- 对于 untracked 文件，直接读取文件内容，并结合文件名和内容推断它的用途。
-- 对于被删除的文件，结合删除 diff 和周边引用说明删掉了什么。
-- 为每个改动文件输出一条简短、具体的描述。
+- 先检查每个改动文件自己的 diff。
+- 只有在仅看 diff 还不足以判断改动内容时，才继续阅读该文件当前内容。
 - 默认用中文生成这些逐文件描述；只有当用户显式传了 `-e` 时，才改为英文。
-- 优先使用类似 `新增登录按钮`、`补充 UserSession 类型`、`调整订单列表请求参数`、`删除废弃支付回调` 这样的表述。
-- 避免 `优化代码`、`修复一些问题`、`更新逻辑` 这类空泛说法。
+- 每条描述都要短、具体、以动作表达为主。
+- 不要退化成 `优化代码`、`修复一些问题`、`更新逻辑` 这类空泛说法。
 
-### 3. 把这些描述整理成一条多行 commit message
+### 3. 生成一条多行 commit message
 
 - 以逐文件描述作为 commit message 的来源材料。
-- 不能把所有改动压成一句话提交信息。
-- 必须生成一条多行 commit message：
-  - 第一行：整个改动集的简短总标题
-  - 后续每一行：写一条生成出的改动描述，每行一条
-- 后续这些描述行前面不要再带文件名、文件路径或分支名，直接写描述内容本身。
-- 这些描述要尽量具体、可读；只有在确实需要消歧义时，才允许在句子内容里提到文件或路径。
-- 如果第一行总标题是自动生成的，它必须和逐行描述保持同一种语言。
-- 如果用户在 `/kc-gdp` 或 `$kc-gdp` 后面追加了文本，只在最前面出现精确的 `-e` 时才把它识别并移除；剩余文本再视为显式指定的第一行标题，后面仍然必须逐行追加生成出的逐文件描述。
-- 除了 `-e` 之外，其他任何参数或标记都不要识别成语言切换参数。
+- 第一行必须是整个改动集的简短总标题。
+- 后续每一行必须放一条逐文件描述，每行一条。
+- 如果用户在快捷词后面追加了文本，只在最前面出现精确的 `-e` 时才把它识别并移除；剩余文本再视为显式指定的第一行标题。
+- 这些描述行默认只写描述内容本身；只有确实需要消歧义时，才允许提到文件路径。
 - 如果这些改动文件看起来彼此不相关，要在提交前先指出这一点，让用户决定是否继续。
-
-结构示例：
-
-```text
-feat: add region-manager entry selection flow
-新增首页头像菜单里的切换版本入口
-新增登录后的入口选择页
-调整登录后默认跳转到 /entry
-新增地区经理首页路由和权限判断
-
-/kc-gdp -e
-feat: add region-manager entry selection flow
-add version-switch entry in the home avatar menu
-add the post-login entry selection page
-change the default post-login redirect to /entry
-add region-manager home routing and permission checks
-```
 
 ### 4. 创建一次提交
 
 - 使用非交互式 git 命令暂存当前仓库改动。
 - 使用推导出的多行 commit message，或“用户显式指定的第一行 + 自动生成的逐文件描述行”，创建且只创建一个提交。
 - 提交时必须使用能保留换行的非交互式 git 命令。
-- 如果 commit hooks 失败，必须报告失败并停止；除非用户明确要求，否则不要绕过 hook。
+- 如果 commit hooks 失败，必须报告失败并停止。
 - 如果因为 git 身份未配置或 index 为空导致提交失败，必须精确说明阻塞点并停止。
 
 ### 5. 安全推送
