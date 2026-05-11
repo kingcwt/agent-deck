@@ -24,6 +24,17 @@ class WorkRecord:
     message_lines: list[str]
 
 
+WEEKDAY_LABELS = {
+    1: "周一",
+    2: "周二",
+    3: "周三",
+    4: "周四",
+    5: "周五",
+    6: "周六",
+    7: "周日",
+}
+
+
 def build_help_text() -> str:
     """Return the supported CLI usage text."""
     return "\n".join(
@@ -146,15 +157,31 @@ def clean_message_lines(message: str) -> list[str]:
     return [line.strip() for line in message.splitlines() if line.strip()]
 
 
-def render_entry_lines(entry: WorkRecord) -> list[str]:
-    """Render one entry, preserving multiple message lines when they exist."""
-    if len(entry.message_lines) == 1:
-        return [f"- `{entry.project}` {entry.message_lines[0]}"]
+def weekday_label(value: datetime.date) -> str:
+    """Return the Chinese weekday label used by the legacy work-hours template."""
+    return WEEKDAY_LABELS[value.isoweekday()]
 
-    lines = [f"- `{entry.project}`"]
-    for message_line in entry.message_lines:
-        # Indented sub-lines keep one commit's detailed notes readable in the file.
-        lines.append(f"  - {message_line}")
+
+def escape_markdown_cell(value: str) -> str:
+    """Keep Markdown table cells stable when messages contain pipe characters."""
+    return value.replace("|", "\\|").strip()
+
+
+def render_halfday_table(entries: list[WorkRecord]) -> list[str]:
+    """Render one half-day block using the legacy table layout."""
+    lines = [
+        "| 时间 | 项目 | 工作描述 |",
+        "|------|------|----------|",
+    ]
+    for entry in sorted(entries, key=lambda item: item.commit_time):
+        entry_time = entry.commit_time.strftime("%H:%M")
+        for message_line in entry.message_lines:
+            lines.append(
+                "| "
+                f"{entry_time} | "
+                f"{escape_markdown_cell(entry.project)} | "
+                f"{escape_markdown_cell(message_line)} |"
+            )
     return lines
 
 
@@ -182,25 +209,59 @@ def build_export_markdown() -> tuple[str, Path]:
             )
         )
 
-    lines = [f"# 近7天工时记录（{start_date.isoformat()} ~ {end_date.isoformat()}）", ""]
-    current_date = end_date
-    while current_date >= start_date:
-        date_key = current_date.isoformat()
-        lines.append(f"## {date_key}")
-        lines.append("")
-        for half in ("上午", "下午"):
-            lines.append(f"### {half}")
-            entries = sorted(
-                buckets.get((date_key, half), []),
-                key=lambda item: item.commit_time,
-            )
-            if not entries:
-                lines.append("- 无")
-            else:
-                for entry in entries:
-                    lines.extend(render_entry_lines(entry))
+    included_dates = sorted(
+        {
+            record.commit_time.date()
+            for entries in buckets.values()
+            for record in entries
+        }
+    )
+    unique_projects = sorted(
+        {
+            record.project
+            for entries in buckets.values()
+            for record in entries
+        }
+    )
+    total_rows = sum(
+        len(record.message_lines)
+        for entries in buckets.values()
+        for record in entries
+    )
+
+    lines = [
+        "# 工时记录",
+        "",
+        f"**统计周期**：{start_date.isoformat()}（{weekday_label(start_date)}）～ {end_date.isoformat()}（{weekday_label(end_date)}）",
+        f"**导出时间**：{now.strftime('%Y-%m-%d %H:%M')}",
+        "",
+        "---",
+        "",
+    ]
+    if not included_dates:
+        lines.append("暂无工时记录")
+    else:
+        for current_date in included_dates:
+            date_key = current_date.isoformat()
+            lines.append(f"## {date_key} {weekday_label(current_date)}")
             lines.append("")
-        current_date -= timedelta(days=1)
+            for half in ("上午", "下午"):
+                entries = buckets.get((date_key, half), [])
+                if not entries:
+                    continue
+                lines.append(f"### {half}")
+                lines.append("")
+                lines.extend(render_halfday_table(entries))
+                lines.append("")
+
+        lines.extend(
+            [
+                "---",
+                "",
+                f"**合计记录**：{total_rows} 条",
+                f"**涉及项目**：{'、'.join(unique_projects)}",
+            ]
+        )
 
     markdown = "\n".join(lines).rstrip() + "\n"
     export_path = Path.home() / "Desktop" / f"工时记录_近7天_{start_date.isoformat()}_{end_date.isoformat()}.md"

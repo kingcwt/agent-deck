@@ -51,8 +51,10 @@ $kc-gdp -e feat: add region-manager entry selection flow
 ### 1. Inspect the repository state
 
 - Treat `/kc-gdp` and `$kc-gdp` as explicit shortcuts for this workflow.
+- Treat the invocation itself as the whole task for this turn. Do not continue the previous conversation topic or reuse an earlier conclusion like `already committed`, `no changes`, or `repository is clean` without re-checking the current repository state.
 - Support only one optional language flag right after the shortcut: `-e` switches the generated descriptions to English.
 - Read `git status --short`, the current branch name, and the configured remotes before mutating anything.
+- Use the fresh `git status --short` result from this invocation as the source of truth for whether local changes exist. If the worktree and index are not empty, do not claim there are no changes.
 - Identify all changed files first, including staged, unstaged, and untracked files in the current worktree.
 - If there are no local changes, say so plainly and stop.
 - If there is no usable remote or the current branch cannot be pushed yet, explain the blocker and stop before creating a commit.

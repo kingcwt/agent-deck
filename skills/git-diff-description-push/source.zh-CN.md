@@ -42,11 +42,11 @@
 
 ### `default_prompt`
 
-`Use $kc-gdp to summarize the current changed files, derive a multi-line commit message from those descriptions, create one commit, and push the current branch.`
+`Immediately inspect the current repository state for this turn, ignore the previous conversation topic and any stale assumption that the repository is already clean, read git status before doing anything else, summarize every current changed file, create one commit, and push the current branch.`
 
 含义：
 
-使用 `$kc-gdp` 汇总当前改动文件，为这些描述生成一条多行 commit message，创建一次提交，并推送当前分支。
+在这一轮里立即检查当前仓库状态，忽略上一轮话题和任何“仓库已经干净”的过期判断，先读取 git status，再汇总当前改动文件，创建一次提交，并推送当前分支。
 
 ### `codex_names`
 
@@ -119,8 +119,10 @@ $kc-gdp -e feat: add region-manager entry selection flow
 ### 1. 先检查仓库状态
 
 - 把 `/kc-gdp` 和 `$kc-gdp` 视为这个工作流的显式快捷触发词。
+- 把这次命令触发本身视为这一轮的完整任务。不要沿用上一轮话题，也不要复用诸如“刚提交过”“没有改动”“仓库已经干净”这类旧结论；必须先重新检查当前仓库状态。
 - 只支持一个可选语言参数，并且必须紧跟在快捷词后面：`-e` 表示把生成描述切换成英文。
 - 在执行任何修改前，先读取 `git status --short`、当前分支名和已配置的远程信息。
+- 这次命令里新读取到的 `git status --short` 结果，就是判断本地是否有改动的唯一事实来源。只要 worktree 或 index 不为空，就不能再说“没有改动”。
 - 先识别所有改动文件，包含 staged、unstaged 和 untracked 文件。
 - 如果本地没有任何改动，直接说明并停止。
 - 如果没有可用远程，或者当前分支暂时不能推送，必须先说明阻塞原因，再停止，不能先创建提交。

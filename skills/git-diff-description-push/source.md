@@ -3,7 +3,7 @@ name: git-diff-description-push
 display_name: Git Diff Description Push
 description: Describe the current repository's changed files one by one with short, concrete summaries, turn those summaries into a multi-line commit message, then commit and push the current branch. Use when the user types /kc-gdp, $kc-gdp, kc-gdp, or asks to summarize current changes and then push them in one flow.
 short_description: Describe current changes, commit, and push [先生成描述再提交推送]
-default_prompt: Use $kc-gdp to summarize the current changed files, derive a multi-line commit message from those descriptions, create one commit, and push the current branch.
+default_prompt: Immediately inspect the current repository state for this turn, ignore the previous conversation topic and any stale assumption that the repository is already clean, read git status before doing anything else, summarize every current changed file, create one commit, and push the current branch.
 codex_names: kc-gdp
 claude_skill_names: kc-gdp
 claude_commands: kc-gdp
@@ -58,8 +58,10 @@ $kc-gdp -e feat: add region-manager entry selection flow
 ### 1. Inspect the repository state
 
 - Treat `/kc-gdp` and `$kc-gdp` as explicit shortcuts for this workflow.
+- Treat the invocation itself as the whole task for this turn. Do not continue the previous conversation topic or reuse an earlier conclusion like `already committed`, `no changes`, or `repository is clean` without re-checking the current repository state.
 - Support only one optional language flag right after the shortcut: `-e` switches the generated descriptions to English.
 - Read `git status --short`, the current branch name, and the configured remotes before mutating anything.
+- Use the fresh `git status --short` result from this invocation as the source of truth for whether local changes exist. If the worktree and index are not empty, do not claim there are no changes.
 - Identify all changed files first, including staged, unstaged, and untracked files in the current worktree.
 - If there are no local changes, say so plainly and stop.
 - If there is no usable remote or the current branch cannot be pushed yet, explain the blocker and stop before creating a commit.
