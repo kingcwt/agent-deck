@@ -243,11 +243,12 @@ $kc-pi
 
 Description:
 
-Export the last 7 days of work-hour records grouped by day and by AM/PM into a Desktop markdown file, or add one manual work-hour record for today into the global agent-deck work-hour log.
+Export the last 7 days of work-hour records grouped by day and by AM/PM into a Desktop markdown file, optionally filtered to selected projects, or add one manual work-hour record for today into the global agent-deck work-hour log.
 
 Parameters:
 
 - Default mode: no extra arguments, export the last 7 days including today.
+- Filter mode: one bracket argument, `"[<project>,<project>]"`, export only matching projects from the last 7 days.
 - Add mode: `add <project> -m"<message>" [-am|-pm]`.
 - Optional `-am`: force the manual record into today's AM bucket.
 - Optional `-pm`: force the manual record into today's PM bucket.
@@ -255,9 +256,9 @@ Parameters:
 Shortcuts And Commands:
 
 - Codex shortcut: `$kc-wh`
-- Codex full commands: `$kc-wh`, `$kc-wh add <project> -m"<message>" [-am|-pm]`
+- Codex full commands: `$kc-wh`, `$kc-wh '[<project>,<project>]'`, `$kc-wh add <project> -m"<message>" [-am|-pm]`
 - Claude Code shortcut: `/kc-wh`
-- Claude Code full commands: `/kc-wh`, `/kc-wh add <project> -m"<message>" [-am|-pm]`
+- Claude Code full commands: `/kc-wh`, `/kc-wh '[<project>,<project>]'`, `/kc-wh add <project> -m"<message>" [-am|-pm]`
 
 Examples:
 
@@ -265,6 +266,7 @@ Examples:
 
 ```text
 $kc-wh
+$kc-wh '[cmc-ai,nice]'
 $kc-wh add 其他 -m"开会1小时"
 $kc-wh add 其他 -m"开会1小时" -am
 $kc-wh add 其他 -m"需求评审" -pm
@@ -274,6 +276,7 @@ $kc-wh add 其他 -m"需求评审" -pm
 
 ```text
 /kc-wh
+/kc-wh '[cmc-ai,nice]'
 /kc-wh add 其他 -m"开会1小时"
 /kc-wh add 其他 -m"开会1小时" -am
 /kc-wh add 其他 -m"需求评审" -pm

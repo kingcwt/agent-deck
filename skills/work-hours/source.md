@@ -1,9 +1,9 @@
 ---
 name: work-hours
 display_name: Work Hours
-description: Export recent work-hour records from the global agent-deck git commit log, or add a manual work-hour record for today. Use when the user types /kc-wh, /kc-work-hours, $kc-wh, $kc-work-hours, kc-wh, or asks to export recent work hours or append a manual work-hour note such as a meeting entry.
+description: Export recent work-hour records from the global agent-deck git commit log, optionally filtered to selected projects, or add a manual work-hour record for today. Use when the user types /kc-wh, /kc-work-hours, $kc-wh, $kc-work-hours, kc-wh, or asks to export recent work hours or append a manual work-hour note such as a meeting entry.
 short_description: Export 7-day work hours or add a manual record [导出近7天工时或补记一条工时]
-default_prompt: Use $kc-wh to export the last 7 days of work-hour records, or use $kc-wh add <project> -m\"<message>\" [-am|-pm] to append a manual work-hour record for today.
+default_prompt: Use $kc-wh to export the last 7 days of work-hour records, use $kc-wh '[project-a,project-b]' to export only selected projects, or use $kc-wh add <project> -m\"<message>\" [-am|-pm] to append a manual work-hour record for today.
 codex_names: kc-wh
 claude_skill_names: kc-wh
 claude_commands: kc-wh
@@ -17,11 +17,12 @@ allow_implicit_invocation: false
 
 ## Description
 
-Export the last 7 days of work-hour records grouped by day and by AM/PM into a Desktop markdown file, or add one manual work-hour record for today into the global agent-deck work-hour log.
+Export the last 7 days of work-hour records grouped by day and by AM/PM into a Desktop markdown file, optionally filtered to selected projects, or add one manual work-hour record for today into the global agent-deck work-hour log.
 
 ## Parameters
 
 - Default mode: no extra arguments, export the last 7 days including today.
+- Filter mode: one bracket argument, `"[<project>,<project>]"`, export only matching projects from the last 7 days.
 - Add mode: `add <project> -m"<message>" [-am|-pm]`.
 - Optional `-am`: force the manual record into today's AM bucket.
 - Optional `-pm`: force the manual record into today's PM bucket.
@@ -29,9 +30,9 @@ Export the last 7 days of work-hour records grouped by day and by AM/PM into a D
 ## Shortcuts And Commands
 
 - Codex shortcut: `$kc-wh`
-- Codex full commands: `$kc-wh`, `$kc-wh add <project> -m"<message>" [-am|-pm]`
+- Codex full commands: `$kc-wh`, `$kc-wh '[<project>,<project>]'`, `$kc-wh add <project> -m"<message>" [-am|-pm]`
 - Claude Code shortcut: `/kc-wh`
-- Claude Code full commands: `/kc-wh`, `/kc-wh add <project> -m"<message>" [-am|-pm]`
+- Claude Code full commands: `/kc-wh`, `/kc-wh '[<project>,<project>]'`, `/kc-wh add <project> -m"<message>" [-am|-pm]`
 
 ## Examples
 
@@ -39,6 +40,7 @@ Export the last 7 days of work-hour records grouped by day and by AM/PM into a D
 
 ```text
 $kc-wh
+$kc-wh '[cmc-ai,nice]'
 $kc-wh add 其他 -m"开会1小时"
 $kc-wh add 其他 -m"开会1小时" -am
 $kc-wh add 其他 -m"需求评审" -pm
@@ -48,6 +50,7 @@ $kc-wh add 其他 -m"需求评审" -pm
 
 ```text
 /kc-wh
+/kc-wh '[cmc-ai,nice]'
 /kc-wh add 其他 -m"开会1小时"
 /kc-wh add 其他 -m"开会1小时" -am
 /kc-wh add 其他 -m"需求评审" -pm
@@ -59,8 +62,9 @@ $kc-wh add 其他 -m"需求评审" -pm
 
 - Treat `/kc-wh` and `$kc-wh` as explicit shortcuts for this workflow.
 - If there is no trailing text after the shortcut, run export mode for the last 7 days including today.
+- If the trailing text is one bracket argument such as `"[cmc-ai,nice]"`, parse it as export-filter mode and keep only records whose project exactly matches one of the listed names.
 - If the trailing text starts with `add `, parse it as manual-add mode using `add <project> -m"<message>" [-am|-pm]`.
-- If the arguments do not match either supported form, stop and report the supported command formats instead of guessing.
+- If the arguments do not match any supported form, stop and report the supported command formats instead of guessing.
 
 ### 2. Use the global agent-deck work-hour installation
 
@@ -72,8 +76,11 @@ $kc-wh add 其他 -m"需求评审" -pm
 ### 3. Run export mode
 
 - In export mode, execute the global CLI with no extra arguments.
+- In export-filter mode, execute the global CLI with the single quoted bracket argument, for example `"[cmc-ai,nice]"`.
 - Export exactly the last 7 days including today: today plus the previous 6 calendar days in the local timezone.
+- Project filtering must use exact project-name matching against the `project` value stored in the work-hour log.
 - The exported markdown must show the date range in the title.
+- When project filtering is used, the exported markdown must show the selected project names and the Desktop file name must include those project names.
 - The export must always be written to a Desktop markdown file, not only printed into the chat reply.
 - Group the output by day, and inside each day split records into `上午` and `下午`.
 - For each record, show the project name plus the commit or manual message content.

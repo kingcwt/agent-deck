@@ -26,4 +26,14 @@ if [ -n "${current_hooks_path}" ] && [ "${current_hooks_path}" != "${NEW_HOOKS_P
 fi
 
 git config --global core.hooksPath "${NEW_HOOKS_PATH}"
+
+# Fix local overrides: unset per-repo core.hooksPath so the global agent-deck
+# hooks take effect. A local hooksPath pointing at a non-existent directory
+# silently disables all hooks without warning.
+local_hooks_path="$(git config --local --get core.hooksPath 2>/dev/null || true)"
+if [ -n "${local_hooks_path}" ] && [ "${local_hooks_path}" != "${NEW_HOOKS_PATH}" ]; then
+  echo "Found local core.hooksPath='${local_hooks_path}' in $(git rev-parse --show-toplevel), unsetting to use global agent-deck hooks"
+  git config --local --unset core.hooksPath
+fi
+
 echo "Installed kc-wh storage to ${WORKHOURS_DIR}"

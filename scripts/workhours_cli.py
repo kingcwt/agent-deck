@@ -41,10 +41,12 @@ def build_help_text() -> str:
         [
             "Usage:",
             "  kc-wh",
+            "  kc-wh '[<project>,<project>]'",
             "  kc-wh add <project> -m\"<message>\" [-am|-pm]",
             "",
             "Examples:",
             "  kc-wh",
+            "  kc-wh '[cmc-ai,nice]'",
             "  kc-wh add 其他 -m\"开会1小时\"",
             "  kc-wh add 其他 -m\"开会1小时\" -am",
             "  kc-wh add 其他 -m\"需求评审\" -pm",
@@ -52,14 +54,28 @@ def build_help_text() -> str:
     )
 
 
+def parse_project_filter(raw_filter: str) -> list[str]:
+    """Parse the bracket project filter while keeping project names exact."""
+    if not (raw_filter.startswith("[") and raw_filter.endswith("]")):
+        raise SystemExit(f"Unsupported arguments: {shlex.quote(raw_filter)}")
+
+    projects = [item.strip() for item in raw_filter[1:-1].split(",") if item.strip()]
+    if not projects:
+        raise SystemExit("Project filter cannot be empty.")
+    return projects
+
+
 def parse_cli(argv: list[str]) -> tuple[str, argparse.Namespace]:
     """Parse the small command surface without adding unrelated subcommands."""
     if not argv:
-        return "export", argparse.Namespace()
+        return "export", argparse.Namespace(project_filter=None)
 
     if argv[0] in {"-h", "--help", "help"}:
         print(build_help_text())
         raise SystemExit(0)
+
+    if len(argv) == 1 and argv[0].startswith("["):
+        return "export", argparse.Namespace(project_filter=parse_project_filter(argv[0]))
 
     if argv[0] != "add":
         raise SystemExit(f"Unsupported arguments: {' '.join(shlex.quote(arg) for arg in argv)}")
@@ -185,7 +201,7 @@ def render_halfday_table(entries: list[WorkRecord]) -> list[str]:
     return lines
 
 
-def build_export_markdown() -> tuple[str, Path]:
+def build_export_markdown(project_filter: list[str] | None = None) -> tuple[str, Path]:
     """Render the last 7 days and return both markdown and the Desktop file path."""
     ensure_storage_exists()
 
@@ -193,12 +209,17 @@ def build_export_markdown() -> tuple[str, Path]:
     end_date = now.date()
     start_date = end_date - timedelta(days=6)
     records = parse_log_file()
+    project_filter_set = set(project_filter or [])
 
     buckets: dict[tuple[str, str], list[WorkRecord]] = {}
     for record in records:
         local_time = record.commit_time.astimezone(now.tzinfo)
         record_date = local_time.date()
         if not (start_date <= record_date <= end_date):
+            continue
+        # Project filters are explicit opt-ins for export only; manual-add records
+        # still preserve whatever project name the user typed.
+        if project_filter_set and record.project not in project_filter_set:
             continue
         half = "上午" if local_time.hour < 12 else "下午"
         buckets.setdefault((record_date.isoformat(), half), []).append(
@@ -234,10 +255,10 @@ def build_export_markdown() -> tuple[str, Path]:
         "",
         f"**统计周期**：{start_date.isoformat()}（{weekday_label(start_date)}）～ {end_date.isoformat()}（{weekday_label(end_date)}）",
         f"**导出时间**：{now.strftime('%Y-%m-%d %H:%M')}",
-        "",
-        "---",
-        "",
     ]
+    if project_filter:
+        lines.append(f"**筛选项目**：{'、'.join(project_filter)}")
+    lines.extend(["", "---", ""])
     if not included_dates:
         lines.append("暂无工时记录")
     else:
@@ -264,13 +285,19 @@ def build_export_markdown() -> tuple[str, Path]:
         )
 
     markdown = "\n".join(lines).rstrip() + "\n"
-    export_path = Path.home() / "Desktop" / f"工时记录_近7天_{start_date.isoformat()}_{end_date.isoformat()}.md"
+    # Include filtered project names in the file name so a partial export does
+    # not overwrite the all-project export for the same 7-day window.
+    project_suffix = ""
+    if project_filter:
+        safe_projects = "_".join(project.replace("/", "-") for project in project_filter)
+        project_suffix = f"_{safe_projects}"
+    export_path = Path.home() / "Desktop" / f"工时记录_近7天{project_suffix}_{start_date.isoformat()}_{end_date.isoformat()}.md"
     return markdown, export_path
 
 
-def export_markdown() -> str:
+def export_markdown(project_filter: list[str] | None = None) -> str:
     """Write the markdown export file and return a user-facing result summary."""
-    markdown, export_path = build_export_markdown()
+    markdown, export_path = build_export_markdown(project_filter)
     export_path.write_text(markdown, encoding="utf-8")
     return f"已导出到：{export_path}\n\n{markdown}"
 
@@ -321,7 +348,7 @@ def main() -> None:
     """Dispatch the CLI to export mode or manual-add mode."""
     mode, args = parse_cli(sys.argv[1:])
     if mode == "export":
-        print(export_markdown(), end="")
+        print(export_markdown(args.project_filter), end="")
         return
 
     print(append_manual_record(args))

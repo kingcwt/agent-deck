@@ -1,6 +1,6 @@
 interface:
   display_name: "Work Hours"
   short_description: "Export 7-day work hours or add a manual record [导出近7天工时或补记一条工时]"
-  default_prompt: "Use $kc-wh to export the last 7 days of work-hour records, or use $kc-wh add <project> -m\"<message>\" [-am|-pm] to append a manual work-hour record for today."
+  default_prompt: "Use $kc-wh to export the last 7 days of work-hour records, use $kc-wh '[project-a,project-b]' to export only selected projects, or use $kc-wh add <project> -m\"<message>\" [-am|-pm] to append a manual work-hour record for today."
 policy:
   allow_implicit_invocation: false
