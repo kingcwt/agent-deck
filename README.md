@@ -239,6 +239,45 @@ $kc-pi
 /kc-pi
 ```
 
+### `kc-wd`
+
+技能描述：
+
+讲解一个英文单词、短语或代码标识符，让中文学习者能理解意思、读准读音并记住它。这个工作流尤其适合代码、文档、终端输出、API 名称和普通英文里的陌生词。
+
+参数：
+
+- 必填：一个英文单词、短语或标识符。
+- 可选上下文：会影响含义的代码片段、句子或领域背景。
+- 如果用户只发送一个独立英文单词且没有其他意图，默认按这个工作流处理。
+- 如果输入是 `drain_notifications` 这样的代码标识符，先拆成组成单词，优先讲用户选中的词，再解释整个标识符。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-wd`
+- Codex 完整命令：`$kc-wd <word-or-identifier>`
+- Claude Code 快捷键：`/kc-wd`
+- Claude Code 完整命令：`/kc-wd <word-or-identifier>`
+- 隐式模式：`<单个英文单词>`
+
+示例：
+
+### Codex
+
+```text
+$kc-wd notifications
+$kc-wd drain_notifications
+notifications
+```
+
+### Claude Code
+
+```text
+/kc-wd notifications
+/kc-wd drain_notifications
+notifications
+```
+
 ### `work-hours`
 
 技能描述：

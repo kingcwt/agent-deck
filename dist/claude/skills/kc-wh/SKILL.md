@@ -77,6 +77,7 @@ $kc-wh add 其他 -m"需求评审" -pm
 - The export must always be written to a Desktop markdown file, not only printed into the chat reply.
 - Group the output by day, and inside each day split records into `上午` and `下午`.
 - For each record, show the project name plus the commit or manual message content.
+- Under each `上午` or `下午` table, also render a `复制文本` plain text block that repeats each work-description line on its own line for quick copying.
 - If one record contains multiple message lines, preserve those lines in the exported file instead of collapsing them into one flat line.
 
 ### 4. Run manual-add mode

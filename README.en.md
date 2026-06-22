@@ -239,6 +239,45 @@ $kc-pi
 /kc-pi
 ```
 
+### `kc-wd`
+
+Description:
+
+Teach one English word, phrase, or code identifier so a Chinese-speaking learner can understand its meaning, pronounce it, and remember it. This workflow is especially for unfamiliar vocabulary in code, documentation, terminal output, API names, and ordinary English.
+
+Parameters:
+
+- Required: one English word, phrase, or identifier.
+- Optional context: surrounding code, sentence, or domain that affects meaning.
+- If the user sends only one standalone English word and no other intent, treat it as an implicit request to run this workflow.
+- If the input is a code identifier such as `drain_notifications`, split it into component words and teach the selected word first, then explain the whole identifier.
+
+Shortcuts And Commands:
+
+- Codex shortcut: `$kc-wd`
+- Codex full command: `$kc-wd <word-or-identifier>`
+- Claude Code shortcut: `/kc-wd`
+- Claude Code full command: `/kc-wd <word-or-identifier>`
+- Implicit mode: `<single English word>`
+
+Examples:
+
+### Codex
+
+```text
+$kc-wd notifications
+$kc-wd drain_notifications
+notifications
+```
+
+### Claude Code
+
+```text
+/kc-wd notifications
+/kc-wd drain_notifications
+notifications
+```
+
 ### `work-hours`
 
 Description:

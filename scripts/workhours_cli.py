@@ -201,6 +201,19 @@ def render_halfday_table(entries: list[WorkRecord]) -> list[str]:
     return lines
 
 
+def iter_halfday_message_lines(entries: list[WorkRecord]) -> list[str]:
+    """Return copy-friendly message lines in the same order as the table rows."""
+    lines: list[str] = []
+    for entry in sorted(entries, key=lambda item: item.commit_time):
+        lines.extend(entry.message_lines)
+    return lines
+
+
+def render_halfday_copy_block(entries: list[WorkRecord]) -> list[str]:
+    """Render plain message lines below each table so users can copy quickly."""
+    return ["#### 复制文本", "", "```text", *iter_halfday_message_lines(entries), "```"]
+
+
 def build_export_markdown(project_filter: list[str] | None = None) -> tuple[str, Path]:
     """Render the last 7 days and return both markdown and the Desktop file path."""
     ensure_storage_exists()
@@ -273,6 +286,8 @@ def build_export_markdown(project_filter: list[str] | None = None) -> tuple[str,
                 lines.append(f"### {half}")
                 lines.append("")
                 lines.extend(render_halfday_table(entries))
+                lines.append("")
+                lines.extend(render_halfday_copy_block(entries))
                 lines.append("")
 
         lines.extend(
