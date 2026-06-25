@@ -81,11 +81,11 @@ $kc-am
 
 ## 描述：
 
-### 1. ...
+1. ...
 
-### 2. ...
+2. ...
 
-### 3. ...
+3. ...
 ```
 
 - Render the time line as an H2 heading using `## `.
@@ -93,7 +93,7 @@ $kc-am
 - Render the cleaned question line as an H2 heading using `## `, followed by the sequence number and question title only.
 - Do not include the literal label `序号 问题：` in the written entry.
 - Render the `描述：` line as an H2 heading using `## `.
-- Render each description point as an H3 heading using `### `.
+- Render each description point as a plain numbered list item like `1. ...`, without adding heading markers such as `### `.
 - Keep the cleaned `question` short and focused.
 - In `description`, break the answer into clear numbered points instead of one long paragraph.
 - Preserve concrete technical nouns, commands, file names, decisions, constraints, and next steps when they are part of the answer.
