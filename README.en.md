@@ -14,7 +14,7 @@ Repository: `https://github.com/kingcwt/agent-deck`
 
 ## What This Repository Solves
 
-You do not need to repeatedly type long prompts such as “analyze the current project, install dependencies, start it, verify it, and summarize it.”
+You do not need to repeatedly type long prompts such as “analyze the current project, verify dependencies, install only if needed, start it, verify it, and summarize it.”
 
 Instead, you keep a short command set such as:
 
@@ -210,7 +210,7 @@ $kc-gp feat: add region-manager entry selection page
 
 Description:
 
-Inspect the current project, install dependencies, start the main local process, verify it, and summarize how the project runs.
+Inspect the current project, verify dependencies, install only when needed, start the main local process, verify it, and summarize how the project runs.
 
 Parameters:
 

@@ -12,7 +12,7 @@ Treat this command as the user's explicit shortcut for the workflow below.
 
 ## Description
 
-Inspect the current project, install dependencies, start the main local process, verify it, and summarize how the project runs.
+Inspect the current project, verify dependencies, install only when needed, start the main local process, verify it, and summarize how the project runs.
 
 ## Parameters
 
@@ -47,12 +47,15 @@ $kc-pi
 
 - Read the top-level manifests, lockfiles, README files, env files, and primary config files before running anything substantial.
 - Determine the project type, package manager, main scripts, likely entrypoint, default port, and whether private registries, local tarballs, or workspace packages are involved.
-- Identify whether the repository already has install artifacts or generated files, but do not assume they are valid until verification succeeds.
+- Identify whether the repository already has dependency artifacts or generated files, then evaluate whether they match the manifests and lockfiles well enough to proceed without installation.
 
-### 2. Install
+### 2. Dependency Check And Install
 
 - Use the package manager implied by the lockfile or project scripts.
-- Prefer lockfile-respecting commands such as `pnpm install --frozen-lockfile`, `npm ci`, or the closest equivalent.
+- Check whether dependencies appear current before installing. Use local evidence such as dependency directories, package-manager metadata, lockfiles, manifest timestamps, install-state files, and workspace package links when they exist.
+- Skip installation when the dependency artifacts are present and appear consistent with the manifests and lockfiles. Record the evidence used for the skip.
+- Install only when dependencies are missing, stale, inconsistent with the lockfile, or the start/verification step fails with a dependency-related error.
+- When installation is needed, prefer lockfile-respecting commands such as `pnpm install --frozen-lockfile`, `npm ci`, or the closest equivalent.
 - Preserve the existing registry configuration by default. If install fails because the configured registry is unreachable, report the exact failure and retry with a per-command registry override before editing config files.
 - Allow normal setup hooks to run unless a specific hook is non-essential and blocks progress.
 
@@ -75,10 +78,11 @@ $kc-pi
 
 ### 5. Report
 
-- Report the exact install command and start command used.
+- Report the exact install command and start command used. If installation was skipped, explicitly say it was skipped and cite the dependency-state evidence.
 - Report the verified local URL and port.
-- Summarize the stack, key scripts, key config files, main business modules, and important runtime dependencies such as proxies or env-based endpoints.
+- Describe the project overall, including its purpose when inferable from docs/code, stack, key scripts, key config files, main business modules, and important runtime dependencies such as proxies or env-based endpoints.
 - Call out blockers, caveats, and next actions without padding.
+- End with a short final summary of the current run state and the most important next action, if any.
 
 ## Guardrails
 

@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Init"
-  short_description: "Inspect, install, run, and summarize a codebase[检查，安装，运行，总结项目]"
-  default_prompt: "Use $kc-pi to inspect the current project, install dependencies, start it, and summarize how it works."
+  short_description: "Inspect, verify deps, run, and summarize a codebase[检查，验证依赖，运行，总结项目]"
+  default_prompt: "Use $kc-pi to inspect the current project, verify dependencies, install only if needed, start it, and summarize how it works."
 policy:
   allow_implicit_invocation: false
