@@ -2,7 +2,7 @@
 name: kc-wd
 display_name: Word Drill
 description: Teach one English word or code identifier with Chinese meaning, part of speech, accurate Chinese pronunciation guide, IPA breakdown, memory analysis, and related extensions. Use when the user types /kc-wd, $kc-wd, kc-wd, asks how to read or remember a word, or sends a single standalone English word with no other intent.
-short_description: Learn a word's meaning and pronunciation [单词读音记忆]
+short_description: Learn a word's meaning and pronunciation [单词谐音]
 default_prompt: Use $kc-wd to explain one English word with Chinese meaning, part of speech, IPA, pronunciation, and memory hooks.
 codex_names: kc-wd
 claude_skill_names: kc-wd

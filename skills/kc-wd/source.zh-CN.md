@@ -34,7 +34,7 @@
 
 ### `short_description`
 
-`Learn a word's meaning and pronunciation [单词读音记忆]`
+`Learn a word's meaning and pronunciation [单词谐音]`
 
 含义：
 
