@@ -135,21 +135,21 @@ $kc-gdd
 
 技能描述：
 
-读取当前仓库改动，为每个改动文件生成一句简短描述，把这些描述整理成多行 commit message，然后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
+读取当前仓库改动；如果没有提供自定义提交描述，则为每个改动文件生成一句简短描述，并整理成 commit message；最后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
 
 参数：
 
 - 必填：无。
 - 可选 `-e`：把生成描述和总标题切换成英文。
-- 可选 `[summary line]`：把尾随文本作为 commit message 第一行。
-- 支持格式：`[-e] [summary line]`。
+- 可选 `[commit message]`：只要快捷词后面跟了任何非空文本，就把所有剩余文本作为完整 commit message。
+- 支持格式：`[-e] [commit message]`。
 
 快捷键和完整命令：
 
 - Codex 快捷键：`$kc-gdp`
-- Codex 完整命令：`$kc-gdp [-e] [summary line]`
+- Codex 完整命令：`$kc-gdp [-e] [commit message]`
 - Claude Code 快捷键：`/kc-gdp`
-- Claude Code 完整命令：`/kc-gdp [-e] [summary line]`
+- Claude Code 完整命令：`/kc-gdp [-e] [commit message]`
 
 示例：
 

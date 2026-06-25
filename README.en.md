@@ -135,21 +135,21 @@ $kc-gdd
 
 Description:
 
-Read the current repository diff, generate one short description per changed file, build a multi-line commit message from those descriptions, then commit and push the current branch. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
+Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, then commit and push the current branch. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
 
 Parameters:
 
 - Required: none.
 - Optional `-e`: switch generated descriptions and summary line to English.
-- Optional `[summary line]`: use the trailing text as the first line of the commit message.
-- Supported format: `[-e] [summary line]`.
+- Optional `[commit message]`: when any non-empty text follows the shortcut, use all remaining text as the complete commit message.
+- Supported format: `[-e] [commit message]`.
 
 Shortcuts And Commands:
 
 - Codex shortcut: `$kc-gdp`
-- Codex full command: `$kc-gdp [-e] [summary line]`
+- Codex full command: `$kc-gdp [-e] [commit message]`
 - Claude Code shortcut: `/kc-gdp`
-- Claude Code full command: `/kc-gdp [-e] [summary line]`
+- Claude Code full command: `/kc-gdp [-e] [commit message]`
 
 Examples:
 

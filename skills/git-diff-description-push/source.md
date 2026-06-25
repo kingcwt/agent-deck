@@ -17,21 +17,21 @@ allow_implicit_invocation: false
 
 ## Description
 
-Read the current repository diff, generate one short description per changed file, build a multi-line commit message from those descriptions, then commit and push the current branch. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
+Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, then commit and push the current branch. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
 
 ## Parameters
 
 - Required: none.
 - Optional `-e`: switch generated descriptions and summary line to English.
-- Optional `[summary line]`: use the trailing text as the first line of the commit message.
-- Supported format: `[-e] [summary line]`.
+- Optional `[commit message]`: when any non-empty text follows the shortcut, use all remaining text as the complete commit message.
+- Supported format: `[-e] [commit message]`.
 
 ## Shortcuts And Commands
 
 - Codex shortcut: `$kc-gdp`
-- Codex full command: `$kc-gdp [-e] [summary line]`
+- Codex full command: `$kc-gdp [-e] [commit message]`
 - Claude Code shortcut: `/kc-gdp`
-- Claude Code full command: `/kc-gdp [-e] [summary line]`
+- Claude Code full command: `/kc-gdp [-e] [commit message]`
 
 ## Examples
 
@@ -66,7 +66,15 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - If there are no local changes, say so plainly and stop.
 - If there is no usable remote or the current branch cannot be pushed yet, explain the blocker and stop before creating a commit.
 
-### 2. Generate one short description per changed file
+### 2. Resolve the commit message mode
+
+- After the shortcut, preserve the user's remaining text as one raw argument payload, including internal line breaks, blank lines, punctuation, and spacing that belongs to the message.
+- Support only one optional language flag right after the shortcut: if the raw payload starts with an exact `-e` token, remove that token and only the separator whitespace immediately after it before checking whether custom message text remains.
+- If any non-empty custom message text remains after optional `-e` removal, use that text as the complete commit message instead of generating a summary line or appending generated per-file description lines.
+- Custom commit message text may span multiple lines. Do not collapse it to one line, split it on newlines, or drop later lines.
+- If no non-empty custom message text remains, continue with the default generated-description flow below.
+
+### 3. Generate one short description per changed file
 
 - Inspect each changed file's diff first.
 - Read the current file content only when the diff alone is not enough to tell what changed.
@@ -74,33 +82,33 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - Keep each description short, concrete, and action-oriented.
 - Do not fall back to vague summaries like `optimize code`, `fix some issues`, or `update logic`.
 
-### 3. Build one multi-line commit message
+### 4. Build one multi-line commit message
 
 - Use the per-file descriptions as the source material for the commit message.
 - The first line must be one short overall summary line for the whole change set.
 - The following lines must include the generated per-file descriptions, one description per line.
-- If the user provides trailing text after the shortcut, remove only an exact leading `-e` token when present, then treat the remaining text as the explicit first summary line.
+- Only run this generated-message step when the user did not provide custom commit message text after the shortcut.
 - Keep the generated description lines as plain descriptions instead of prefixing them with file paths unless a path is truly needed for disambiguation.
 - If the changed files appear unrelated to each other, call that out before committing so the user can redirect if needed.
 
-### 4. Create one commit
+### 5. Create one commit
 
 - Stage the current repository changes using a non-interactive git command.
-- Create exactly one commit using the derived multi-line commit message or the user's explicit first line plus generated per-file lines.
-- Use a non-interactive git command that preserves line breaks in the final commit message.
+- Create exactly one commit using either the complete custom commit message or the derived generated multi-line commit message.
+- Use a non-interactive git command that preserves line breaks in the final commit message, such as writing the message to a temporary file and committing with `git commit -F <file>`.
 - If commit hooks fail, report the failure and stop.
 - If git rejects the commit because identity is missing or the index is empty, report the exact blocker and stop.
 
-### 5. Push safely
+### 6. Push safely
 
 - Push the current branch to its configured upstream when one exists.
 - If the branch has no upstream but `origin` exists, push with upstream setup using the current branch name.
 - If push is rejected because the remote has new commits, report that clearly and stop instead of forcing the push.
 - If network or permission approval is required in the environment, request it rather than pretending the push succeeded.
 
-### 6. Report the result
+### 7. Report the result
 
-- Report the per-file descriptions you generated.
+- Report the per-file descriptions you generated, or state that a custom commit message was used when generation was skipped.
 - Report the commit message used.
 - Report the branch and remote target that were pushed.
 - Report the resulting commit hash when available.
