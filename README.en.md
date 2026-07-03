@@ -102,13 +102,13 @@ $diff-review
 
 Description:
 
-Read the current repository diff and output one short, concrete description for each changed file.
+Read the current repository diff and output a concise Chinese review of the changed files: what each file changed, whether the implementation can be smaller, and whether the changes may affect other modules or logic.
 
 Parameters:
 
 - Required: none.
-- Optional flags: none.
-- Output: one short, concrete description per changed file.
+- Optional language: Chinese by default; use English only when the user explicitly asks for English.
+- Output: concise per-file change summaries plus review findings, minimal-implementation suggestions, and impact notes.
 
 Shortcuts And Commands:
 
@@ -130,7 +130,6 @@ $kc-gdd
 ```text
 /kc-gdd
 ```
-
 ### `git-diff-description-push`
 
 Description:
@@ -237,6 +236,47 @@ $kc-pi
 
 ```text
 /kc-pi
+```
+
+### `kc-slim-review`
+
+Description:
+
+Review code, git diffs, or a proposed implementation and identify the smallest safe path that still satisfies the current requirement.
+
+This workflow is a read-only complexity review by default. It finds what can be deleted, reused, localized, or postponed. It does not weaken safety, data protection, comments, tests, or shared-code review rules.
+
+Parameters:
+
+- Required: none.
+- Optional target: a file path, selected code, current diff, staged diff, pull request diff, or proposed design.
+- Optional intent: the user may ask for review only, a minimal refactor plan, or applying fixes after the review.
+- Default scope: review only the provided or current working diff. Do not expand to the whole repository unless explicitly requested.
+- Not supported by default: automatic refactoring, public API redesign, database/schema changes, dependency changes, or shared package edits.
+
+Shortcuts And Commands:
+
+- Codex shortcuts: `$kc-sr`, `$kc-slim-review`
+- Codex full commands: `$kc-sr [target-or-intent]`, `$kc-slim-review [target-or-intent]`
+- Claude Code shortcuts: `/kc-sr`, `/kc-slim-review`
+- Claude Code full commands: `/kc-sr [target-or-intent]`, `/kc-slim-review [target-or-intent]`
+
+Examples:
+
+### Codex
+
+```text
+$kc-sr
+$kc-sr review current diff for over-engineering
+$kc-slim-review this file
+```
+
+### Claude Code
+
+```text
+/kc-sr
+/kc-sr review current diff for over-engineering
+/kc-slim-review this file
 ```
 
 ### `kc-wd`

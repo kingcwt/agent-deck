@@ -1,0 +1,6 @@
+interface:
+  display_name: "Slim Review"
+  short_description: "Find smaller safe implementations [最小实现审查]"
+  default_prompt: "Use $kc-sr to review code or a diff for over-engineering, duplicated logic, avoidable dependencies, and unsafe scope expansion without changing code by default."
+policy:
+  allow_implicit_invocation: false

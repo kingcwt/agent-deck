@@ -1,6 +1,6 @@
 interface:
-  display_name: "Git Diff Description"
-  short_description: "Summarize each changed file in one short, concrete line [逐文件生成简短改动描述]"
-  default_prompt: "Immediately inspect the current repository state for this turn, ignore the previous conversation topic, find every current changed file, and output a flat `path: short description` list based on each file's diff and needed context. If there are no changed files, say so plainly."
+  display_name: "Git Diff Review"
+  short_description: "Summarize and review each changed file in Chinese [逐文件说明并审查当前改动]"
+  default_prompt: "立即检查当前仓库状态，忽略上一段对话话题，找出所有当前改动文件；默认必须用中文输出。逐文件说明主要改动，然后给出可优化点、最小化实现判断、影响范围或风险审查。只有用户明确要求英文时才允许输出英文。如果没有改动文件，直接用中文说明。"
 policy:
   allow_implicit_invocation: false

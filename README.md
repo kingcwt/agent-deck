@@ -102,13 +102,13 @@ $diff-review
 
 技能描述：
 
-读取当前仓库改动，并为每个改动文件输出一句简短、具体的描述。
+读取当前仓库改动，并输出简洁中文审查：说明每个文件改了什么、实现是否还能更小、是否可能影响其他模块或逻辑。
 
 参数：
 
 - 必填：无。
-- 可选参数：无。
-- 输出：每个改动文件一条简短、具体的描述。
+- 可选语言：默认中文；只有用户明确要求英文时才输出英文。
+- 输出：逐文件改动说明，加审查结论、最小化实现建议和影响范围说明。
 
 快捷键和完整命令：
 
@@ -130,7 +130,6 @@ $kc-gdd
 ```text
 /kc-gdd
 ```
-
 ### `git-diff-description-push`
 
 技能描述：
@@ -237,6 +236,47 @@ $kc-pi
 
 ```text
 /kc-pi
+```
+
+### `kc-slim-review`
+
+技能描述：
+
+审查代码、git diff 或拟议实现，找出在满足当前需求前提下最小且安全的实现路径。
+
+这个工作流默认是只读复杂度审查。它寻找哪些代码可以删除、复用、局部化或推迟，但不能削弱安全、数据保护、注释、测试或共享代码确认规则。
+
+参数：
+
+- 必填：无。
+- 可选目标：文件路径、选中的代码、当前 diff、暂存 diff、PR diff 或设计方案。
+- 可选意图：用户可以要求只审查、输出最小重构计划，或在审查后应用修复。
+- 默认范围：只审查提供的目标或当前工作区 diff；除非用户明确要求，不扩展到整个仓库。
+- 默认不支持：自动重构、公共 API 重设计、数据库/schema 修改、依赖变更、共享 package 修改。
+
+快捷键和完整命令：
+
+- Codex 快捷键：`$kc-sr`、`$kc-slim-review`
+- Codex 完整命令：`$kc-sr [target-or-intent]`、`$kc-slim-review [target-or-intent]`
+- Claude Code 快捷键：`/kc-sr`、`/kc-slim-review`
+- Claude Code 完整命令：`/kc-sr [target-or-intent]`、`/kc-slim-review [target-or-intent]`
+
+示例：
+
+### Codex
+
+```text
+$kc-sr
+$kc-sr review current diff for over-engineering
+$kc-slim-review this file
+```
+
+### Claude Code
+
+```text
+/kc-sr
+/kc-sr review current diff for over-engineering
+/kc-slim-review this file
 ```
 
 ### `kc-wd`
