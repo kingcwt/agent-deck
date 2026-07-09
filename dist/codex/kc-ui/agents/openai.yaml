@@ -1,0 +1,6 @@
+interface:
+  display_name: "UI Style"
+  short_description: "List, inspect, and apply UI styles [UI风格库]"
+  default_prompt: "Use $kc-ui to list curated UI styles, inspect one style, or apply an explicitly named style to the current UI."
+policy:
+  allow_implicit_invocation: false

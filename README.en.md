@@ -130,6 +130,7 @@ $kc-gdd
 ```text
 /kc-gdd
 ```
+
 ### `git-diff-description-push`
 
 Description:
@@ -278,6 +279,60 @@ $kc-slim-review this file
 /kc-sr review current diff for over-engineering
 /kc-slim-review this file
 ```
+
+### `kc-ui`
+
+Description:
+
+List, inspect, and apply curated UI style presets to the current project. This skill is a style library and execution workflow for web, desktop, and mobile interfaces, not a single fixed template.
+
+Parameters:
+
+- Required for applying UI changes: an explicit built-in style id and a UI task.
+- Optional for listing: no parameters.
+- Optional for inspection: one built-in style id.
+- Current built-in style id: `agency-compact`.
+- If the user asks for a generic style such as dark, minimal, Apple-like, compact, or native without naming a style id, do not edit code. List available style ids with one-line descriptions and ask the user to rerun with an explicit style id.
+- If the style id is unknown, do not edit code. List available style ids and show the expected command shape.
+
+Shortcuts And Commands:
+
+- Codex list command: `$kc-ui list`
+- Codex inspect command: `$kc-ui look <style-id>`
+- Codex apply command: `$kc-ui use <style-id> <task>`
+- Codex shorthand apply command: `$kc-ui <style-id> <task>`
+- Claude Code list command: `/kc-ui list`
+- Claude Code inspect command: `/kc-ui look <style-id>`
+- Claude Code apply command: `/kc-ui use <style-id> <task>`
+- Claude Code shorthand apply command: `/kc-ui <style-id> <task>`
+
+Examples:
+
+### Codex
+
+```text
+$kc-ui list
+$kc-ui look agency-compact
+$kc-ui use agency-compact redesign the settings page
+$kc-ui agency-compact adjust the whole project UI
+```
+
+### Claude Code
+
+```text
+/kc-ui list
+/kc-ui look agency-compact
+/kc-ui use agency-compact redesign the settings page
+/kc-ui agency-compact adjust the whole project UI
+```
+
+### Ambiguous request
+
+```text
+$kc-ui make the settings page dark and minimal
+```
+
+Expected behavior: do not edit code. Show the available style ids and ask the user to choose one explicitly, for example `$kc-ui use agency-compact make the settings page dark and minimal`.
 
 ### `kc-wd`
 

@@ -130,6 +130,7 @@ $kc-gdd
 ```text
 /kc-gdd
 ```
+
 ### `git-diff-description-push`
 
 技能描述：
@@ -278,6 +279,60 @@ $kc-slim-review this file
 /kc-sr review current diff for over-engineering
 /kc-slim-review this file
 ```
+
+### `kc-ui`
+
+技能描述：
+
+列出、查看并应用沉淀好的 UI 风格预设到当前项目。这个技能是面向 Web、桌面端和移动端界面的风格库与执行工作流，不是某一个固定端的模板。
+
+参数：
+
+- 应用 UI 修改时必填：一个明确的内置风格 id 和一个 UI 任务。
+- 列表命令可选：不需要参数。
+- 查看命令可选：一个内置风格 id。
+- 当前内置风格 id：`agency-compact`。
+- 如果用户只说暗色、极简、苹果风、紧凑、原生感等泛化风格，但没有命名风格 id，不要修改代码。列出可用风格 id 和一句话描述，让用户用明确风格 id 重新执行。
+- 如果风格 id 未知，不要修改代码。列出可用风格 id，并展示期望的命令格式。
+
+快捷键和完整命令：
+
+- Codex 列表命令：`$kc-ui list`
+- Codex 查看命令：`$kc-ui look <style-id>`
+- Codex 应用命令：`$kc-ui use <style-id> <task>`
+- Codex 简写应用命令：`$kc-ui <style-id> <task>`
+- Claude Code 列表命令：`/kc-ui list`
+- Claude Code 查看命令：`/kc-ui look <style-id>`
+- Claude Code 应用命令：`/kc-ui use <style-id> <task>`
+- Claude Code 简写应用命令：`/kc-ui <style-id> <task>`
+
+示例：
+
+### Codex
+
+```text
+$kc-ui list
+$kc-ui look agency-compact
+$kc-ui use agency-compact redesign the settings page
+$kc-ui agency-compact adjust the whole project UI
+```
+
+### Claude Code
+
+```text
+/kc-ui list
+/kc-ui look agency-compact
+/kc-ui use agency-compact redesign the settings page
+/kc-ui agency-compact adjust the whole project UI
+```
+
+### 模糊请求
+
+```text
+$kc-ui make the settings page dark and minimal
+```
+
+期望行为：不要修改代码。展示可用风格 id，并让用户明确选择，例如 `$kc-ui use agency-compact make the settings page dark and minimal`。
 
 ### `kc-wd`
 
