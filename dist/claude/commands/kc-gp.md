@@ -12,7 +12,7 @@ Treat this command as the user's explicit shortcut for the workflow below.
 
 ## Description
 
-Commit the current repository changes with a required description, then push the current branch to the configured remote.
+Run the repository-required lint and quality checks, then commit the current repository changes with a required description and push the current branch only when every required check passes.
 
 ## Parameters
 
@@ -55,6 +55,7 @@ $kc-gp feat: add region-manager entry selection page
 ### 2. Inspect the repository state
 
 - Read `git status --short`, the current branch name, and the configured remotes before mutating anything.
+- Read repository-local instruction files and the project manifests, task definitions, and CI configuration that define the required validation commands before deciding which checks to run.
 - Summarize which files are changed, whether changes are already staged, and which branch will be pushed.
 - If there are no local changes, say so plainly and stop.
 - If there is no usable remote or the current branch cannot be pushed yet, explain the blocker and stop before creating a commit.
@@ -66,21 +67,34 @@ $kc-gp feat: add region-manager entry selection page
 - If the worktree contains changes that appear unrelated to the user's stated intent, call that out before committing so the user can redirect if needed.
 - Do not rewrite history, amend prior commits, force-push, or switch branches unless the user explicitly asks.
 
-### 4. Create the commit
+### 4. Pass the mandatory quality gate
+
+- Treat the complete, final working-tree content intended for the commit as the validation target.
+- Discover the applicable commands from repository-local instructions such as `AGENTS.md` or `CLAUDE.md`, package scripts, Makefiles or task runners, and CI configuration. Use the repository's actual commands instead of inventing a generic command.
+- Run lint for every affected application or package that provides a lint command. If the repository defines build, typecheck, or another command as its lint validation, run that exact command.
+- Also run every typecheck, test, build, or other quality check that repository instructions require for the changed scope. Never treat reviewing the diff as a replacement for executable validation.
+- Respect explicit repository restrictions on commands. When a required command is forbidden, use only an explicitly documented equivalent; if no allowed equivalent exists, stop before staging and report that validation is blocked.
+- Run `git diff --check` in addition to the repository-defined checks so whitespace errors are caught before staging.
+- Require a successful exit status from every required command. If any check fails, cannot run, or cannot be identified reliably, stop before staging, committing, or pushing and report the exact blocker.
+- Do not bypass this gate with `--no-verify`, by disabling or weakening lint rules, by adding ignores solely to hide failures, or because the user asks to skip validation.
+- Do not repair application code inside this commit-and-push workflow. Report the failure and wait for a separate fix request.
+- If any file changes after validation, rerun all checks affected by that change. Only the exact successfully validated state may be staged and committed.
+
+### 5. Create the commit
 
 - Stage the repository changes using a non-interactive git command.
 - Create exactly one commit using the provided description as the commit message.
-- If commit hooks fail, report the failure and stop. Do not bypass hooks unless the user explicitly asks.
+- If commit hooks fail, report the failure and stop. Never bypass hooks.
 - If git rejects the commit because identity is missing or the index is empty, report the exact blocker and stop.
 
-### 5. Push safely
+### 6. Push safely
 
 - Push the current branch to its configured upstream when one exists.
 - If the branch has no upstream but `origin` exists, push with upstream setup using the current branch name.
 - If push is rejected because the remote has new commits, report that clearly and stop instead of forcing the push.
 - If network or permission approval is required in the environment, request it rather than pretending the push succeeded.
 
-### 6. Report the result
+### 7. Report the result
 
 - Report the commit message used.
 - Report the branch and remote target that were pushed.
@@ -93,4 +107,6 @@ $kc-gp feat: add region-manager entry selection page
 - Do not edit application code as part of this workflow unless the user separately asks for fixes.
 - Do not create multiple commits from one invocation.
 - Do not push to a different branch than the current branch unless the user explicitly asks.
+- Never commit or push when required validation has failed, was skipped, could not run, or no longer matches the current file state.
+- Never bypass commit hooks or the mandatory quality gate.
 - Do not fabricate success. Verification must come from the actual git command results.

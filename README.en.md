@@ -135,7 +135,7 @@ $kc-gdd
 
 Description:
 
-Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, then commit and push the current branch. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
+Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, run the repository-required lint and quality checks, then commit and push the current branch only when every required check passes. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
 
 Parameters:
 
@@ -175,7 +175,7 @@ $kc-gdp -e feat: add region-manager entry selection flow
 
 Description:
 
-Commit the current repository changes with a required description, then push the current branch to the configured remote.
+Run the repository-required lint and quality checks, then commit the current repository changes with a required description and push the current branch only when every required check passes.
 
 Parameters:
 

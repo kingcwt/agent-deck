@@ -1,9 +1,9 @@
 ---
 name: git-diff-description-push
 display_name: Git Diff Description Push
-description: Describe the current repository's changed files one by one with short, concrete summaries, turn those summaries into a multi-line commit message, then commit and push the current branch. Use when the user types /kc-gdp, $kc-gdp, kc-gdp, or asks to summarize current changes and then push them in one flow.
-short_description: Describe current changes, commit, and push [先生成描述再提交推送]
-default_prompt: Immediately inspect the current repository state for this turn, ignore the previous conversation topic and any stale assumption that the repository is already clean, read git status before doing anything else, summarize every current changed file, create one commit, and push the current branch.
+description: Describe the current repository's changed files one by one with short, concrete summaries, run the repository-required lint and quality checks, then commit and push only when every required check passes. Use when the user types /kc-gdp, $kc-gdp, kc-gdp, or asks to summarize current changes and then push them in one flow.
+short_description: Describe, validate, commit, and push [先检查再提交推送]
+default_prompt: Immediately inspect the current repository state for this turn, ignore stale conclusions, summarize every current changed file, run all repository-required lint and quality checks against the final changes, and create and push one commit only if every required check passes.
 codex_names: kc-gdp
 claude_skill_names: kc-gdp
 claude_commands: kc-gdp
@@ -17,7 +17,7 @@ allow_implicit_invocation: false
 
 ## Description
 
-Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, then commit and push the current branch. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
+Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, run the repository-required lint and quality checks, then commit and push the current branch only when every required check passes. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
 
 ## Parameters
 
@@ -61,6 +61,7 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - Treat the invocation itself as the whole task for this turn. Do not continue the previous conversation topic or reuse an earlier conclusion like `already committed`, `no changes`, or `repository is clean` without re-checking the current repository state.
 - Support only one optional language flag right after the shortcut: `-e` switches the generated descriptions to English.
 - Read `git status --short`, the current branch name, and the configured remotes before mutating anything.
+- Read repository-local instruction files and the project manifests, task definitions, and CI configuration that define the required validation commands before deciding which checks to run.
 - Use the fresh `git status --short` result from this invocation as the source of truth for whether local changes exist. If the worktree and index are not empty, do not claim there are no changes.
 - Identify all changed files first, including staged, unstaged, and untracked files in the current worktree.
 - If there are no local changes, say so plainly and stop.
@@ -91,7 +92,20 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - Keep the generated description lines as plain descriptions instead of prefixing them with file paths unless a path is truly needed for disambiguation.
 - If the changed files appear unrelated to each other, call that out before committing so the user can redirect if needed.
 
-### 5. Create one commit
+### 5. Pass the mandatory quality gate
+
+- Treat the complete, final working-tree content intended for the commit as the validation target.
+- Discover the applicable commands from repository-local instructions such as `AGENTS.md` or `CLAUDE.md`, package scripts, Makefiles or task runners, and CI configuration. Use the repository's actual commands instead of inventing a generic command.
+- Run lint for every affected application or package that provides a lint command. If the repository defines build, typecheck, or another command as its lint validation, run that exact command.
+- Also run every typecheck, test, build, or other quality check that repository instructions require for the changed scope. Never treat reviewing the diff as a replacement for executable validation.
+- Respect explicit repository restrictions on commands. When a required command is forbidden, use only an explicitly documented equivalent; if no allowed equivalent exists, stop before staging and report that validation is blocked.
+- Run `git diff --check` in addition to the repository-defined checks so whitespace errors are caught before staging.
+- Require a successful exit status from every required command. If any check fails, cannot run, or cannot be identified reliably, stop before staging, committing, or pushing and report the exact blocker.
+- Do not bypass this gate with `--no-verify`, by disabling or weakening lint rules, by adding ignores solely to hide failures, or because the user asks to skip validation.
+- Do not repair application code inside this commit-and-push workflow. Report the failure and wait for a separate fix request.
+- If any file changes after validation, rerun all checks affected by that change. Only the exact successfully validated state may be staged and committed.
+
+### 6. Create one commit
 
 - Stage the current repository changes using a non-interactive git command.
 - Create exactly one commit using either the complete custom commit message or the derived generated multi-line commit message.
@@ -99,14 +113,14 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - If commit hooks fail, report the failure and stop.
 - If git rejects the commit because identity is missing or the index is empty, report the exact blocker and stop.
 
-### 6. Push safely
+### 7. Push safely
 
 - Push the current branch to its configured upstream when one exists.
 - If the branch has no upstream but `origin` exists, push with upstream setup using the current branch name.
 - If push is rejected because the remote has new commits, report that clearly and stop instead of forcing the push.
 - If network or permission approval is required in the environment, request it rather than pretending the push succeeded.
 
-### 7. Report the result
+### 8. Report the result
 
 - Report the per-file descriptions you generated, or state that a custom commit message was used when generation was skipped.
 - Report the commit message used.
@@ -121,4 +135,6 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - Do not silently drop changed files from the commit set.
 - Do not create multiple commits from one invocation.
 - Do not rewrite history, amend prior commits, force-push, or switch branches unless the user explicitly asks.
+- Never commit or push when required validation has failed, was skipped, could not run, or no longer matches the current file state.
+- Never bypass commit hooks or the mandatory quality gate.
 - Do not fabricate success. Verification must come from the actual git command results.

@@ -30,23 +30,23 @@
 
 含义：
 
-先逐个为当前仓库的改动文件生成简短、具体的描述，再把这些描述整理成一条“多行”的 commit message，最后提交并推送当前分支。适用于用户输入 `/kc-gdp`、`$kc-gdp`、`kc-gdp`，或者明确要求“一边生成改动描述一边提交推送”的场景。
+先逐个为当前仓库的改动文件生成简短、具体的描述，执行仓库规定的 lint 和质量检查，再仅在所有规定检查均通过后提交并推送当前分支。适用于用户输入 `/kc-gdp`、`$kc-gdp`、`kc-gdp`，或者明确要求“一边生成改动描述一边提交推送”的场景。
 
 ### `short_description`
 
-`Describe current changes, commit, and push`
+`Describe, validate, commit, and push`
 
 含义：
 
-先描述当前改动，再提交并推送。
+先描述并检查当前改动，再提交并推送。
 
 ### `default_prompt`
 
-`Immediately inspect the current repository state for this turn, ignore the previous conversation topic and any stale assumption that the repository is already clean, read git status before doing anything else, summarize every current changed file, create one commit, and push the current branch.`
+`Immediately inspect the current repository state for this turn, ignore stale conclusions, summarize every current changed file, run all repository-required lint and quality checks against the final changes, and create and push one commit only if every required check passes.`
 
 含义：
 
-在这一轮里立即检查当前仓库状态，忽略上一轮话题和任何“仓库已经干净”的过期判断，先读取 git status，再汇总当前改动文件，创建一次提交，并推送当前分支。
+在这一轮里立即检查当前仓库状态，忽略过期结论，汇总当前所有改动文件，对最终改动执行仓库规定的全部 lint 和质量检查，并且仅在所有规定检查均通过后创建并推送一次提交。
 
 ### `codex_names`
 
@@ -78,7 +78,7 @@
 
 ## Description
 
-读取当前仓库改动；如果没有提供自定义提交描述，则为每个改动文件生成一句简短描述，并整理成 commit message；最后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
+读取当前仓库改动；如果没有提供自定义提交描述，则为每个改动文件生成一句简短描述，并整理成 commit message；随后执行仓库规定的 lint 和质量检查，仅在所有规定检查均通过后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
 
 ## Parameters
 
@@ -122,6 +122,7 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - 把这次命令触发本身视为这一轮的完整任务。不要沿用上一轮话题，也不要复用诸如“刚提交过”“没有改动”“仓库已经干净”这类旧结论；必须先重新检查当前仓库状态。
 - 只支持一个可选语言参数，并且必须紧跟在快捷词后面：`-e` 表示把生成描述切换成英文。
 - 在执行任何修改前，先读取 `git status --short`、当前分支名和已配置的远程信息。
+- 在决定执行哪些检查前，先读取仓库本地规则文件，以及定义了必要验证命令的项目清单、任务配置和 CI 配置。
 - 这次命令里新读取到的 `git status --short` 结果，就是判断本地是否有改动的唯一事实来源。只要 worktree 或 index 不为空，就不能再说“没有改动”。
 - 先识别所有改动文件，包含 staged、unstaged 和 untracked 文件。
 - 如果本地没有任何改动，直接说明并停止。
@@ -152,7 +153,20 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - 这些描述行默认只写描述内容本身；只有确实需要消歧义时，才允许提到文件路径。
 - 如果这些改动文件看起来彼此不相关，要在提交前先指出这一点，让用户决定是否继续。
 
-### 5. 创建一次提交
+### 5. 通过强制质量门禁
+
+- 把准备提交的完整、最终工作区内容作为验证对象。
+- 从仓库本地规则（例如 `AGENTS.md` 或 `CLAUDE.md`）、package scripts、Makefile 或任务运行器、CI 配置中确认适用命令。必须使用仓库真实命令，不能自行臆造一个通用命令。
+- 对每个提供 lint 命令的受影响应用或包执行 lint。如果仓库把 build、typecheck 或其他命令定义为 lint 验证，必须执行该实际命令。
+- 同时执行仓库规则针对当前改动范围要求的全部 typecheck、test、build 或其他质量检查。不能用 diff 审查替代可执行验证。
+- 遵守仓库对命令的明确限制。某个必要命令被禁止时，只能使用规则中明确写出的等价检查；如果不存在允许的等价检查，必须在暂存前停止并报告验证阻塞。
+- 除仓库规定的检查外，还要执行 `git diff --check`，在暂存前发现空白符错误。
+- 每一条必要命令都必须成功退出。任何检查失败、无法执行或无法可靠识别时，必须在暂存、提交、推送之前停止，并报告准确阻塞原因。
+- 不得使用 `--no-verify`、关闭或降低 lint 规则、仅为掩盖失败而添加忽略项，或者因为用户要求跳过验证而绕过本门禁。
+- 不要在这个提交推送工作流中修复业务代码。报告失败并等待单独的修复请求。
+- 验证后只要任意文件发生变化，就必须重跑受影响的全部检查。只能暂存和提交与成功验证结果完全一致的状态。
+
+### 6. 创建一次提交
 
 - 使用非交互式 git 命令暂存当前仓库改动。
 - 使用完整的自定义 commit message，或自动推导出的多行 commit message，创建且只创建一个提交。
@@ -160,14 +174,14 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - 如果 commit hooks 失败，必须报告失败并停止。
 - 如果因为 git 身份未配置或 index 为空导致提交失败，必须精确说明阻塞点并停止。
 
-### 6. 安全推送
+### 7. 安全推送
 
 - 如果当前分支已有 upstream，就推到该 upstream。
 - 如果当前分支还没有 upstream，但存在 `origin`，则按当前分支名建立 upstream 并推送。
 - 如果 push 因远程已有新提交而被拒绝，必须明确说明并停止，不能强推。
 - 如果当前环境对网络或权限有额外限制，应申请必要授权，而不是假装推送成功。
 
-### 7. 报告结果
+### 8. 报告结果
 
 - 报告生成出的逐文件描述；如果因为使用了自定义 commit message 而跳过自动生成，则说明这一点。
 - 报告实际使用的 commit message。
@@ -182,4 +196,6 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - 不要静默遗漏改动文件。
 - 一次调用只创建一个提交。
 - 除非用户明确要求，否则不要改历史、amend、force push 或切换分支。
+- 必要验证失败、被跳过、无法执行，或者已经不再对应当前文件状态时，绝对不能提交或推送。
+- 绝对不能绕过 commit hooks 或强制质量门禁。
 - 不要伪造成功结果；是否成功必须以真实 git 命令结果为准。
