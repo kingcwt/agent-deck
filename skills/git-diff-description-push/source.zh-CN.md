@@ -30,7 +30,7 @@
 
 含义：
 
-先逐个为当前仓库的改动文件生成简短、具体的描述，执行仓库规定的 lint 和质量检查，再仅在所有规定检查均通过后提交并推送当前分支。适用于用户输入 `/kc-gdp`、`$kc-gdp`、`kc-gdp`，或者明确要求“一边生成改动描述一边提交推送”的场景。
+先逐个为当前仓库的改动文件生成简短、具体的描述，只对这些改动执行文件级 lint 和定向测试，再仅在所有适用的改动文件检查均通过后提交并推送当前分支。适用于用户输入 `/kc-gdp`、`$kc-gdp`、`kc-gdp`，或者明确要求“一边生成改动描述一边提交推送”的场景。
 
 ### `short_description`
 
@@ -42,11 +42,11 @@
 
 ### `default_prompt`
 
-`Immediately inspect the current repository state for this turn, ignore stale conclusions, summarize every current changed file, run all repository-required lint and quality checks against the final changes, and create and push one commit only if every required check passes.`
+`Immediately inspect the current repository state for this turn, ignore stale conclusions, summarize every current changed file, run repository-defined file-scoped lint and targeted tests only for the final changed files, and create and push one commit only if every applicable changed-file check passes.`
 
 含义：
 
-在这一轮里立即检查当前仓库状态，忽略过期结论，汇总当前所有改动文件，对最终改动执行仓库规定的全部 lint 和质量检查，并且仅在所有规定检查均通过后创建并推送一次提交。
+在这一轮里立即检查当前仓库状态，忽略过期结论，汇总当前所有改动文件，只对最终改动文件执行仓库定义的文件级 lint 和定向测试，并且仅在所有适用的改动文件检查均通过后创建并推送一次提交。
 
 ### `codex_names`
 
@@ -78,7 +78,7 @@
 
 ## Description
 
-读取当前仓库改动；如果没有提供自定义提交描述，则为每个改动文件生成一句简短描述，并整理成 commit message；随后执行仓库规定的 lint 和质量检查，仅在所有规定检查均通过后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
+读取当前仓库改动；如果没有提供自定义提交描述，则为每个改动文件生成一句简短描述，并整理成 commit message；随后只对这些改动执行文件级 lint 和定向测试，仅在所有适用的改动文件检查均通过后提交并推送当前分支。默认生成中文描述，只有传入 `-e` 时才切换成英文。
 
 ## Parameters
 
@@ -155,13 +155,13 @@ $kc-gdp -e feat: add region-manager entry selection flow
 
 ### 5. 通过强制质量门禁
 
-- 把准备提交的完整、最终工作区内容作为验证对象。
-- 从仓库本地规则（例如 `AGENTS.md` 或 `CLAUDE.md`）、package scripts、Makefile 或任务运行器、CI 配置中确认适用命令。必须使用仓库真实命令，不能自行臆造一个通用命令。
-- 对每个提供 lint 命令的受影响应用或包执行 lint。如果仓库把 build、typecheck 或其他命令定义为 lint 验证，必须执行该实际命令。
-- 同时执行仓库规则针对当前改动范围要求的全部 typecheck、test、build 或其他质量检查。不能用 diff 审查替代可执行验证。
-- 遵守仓库对命令的明确限制。某个必要命令被禁止时，只能使用规则中明确写出的等价检查；如果不存在允许的等价检查，必须在暂存前停止并报告验证阻塞。
+- 只把准备提交的完整、最终改动文件作为强制验证范围。未改动文件和整个仓库的健康状态不属于本工作流。
+- 从仓库本地规则（例如 `AGENTS.md` 或 `CLAUDE.md`）、package scripts、Makefile 或任务运行器、CI 配置中确认文件级命令。必须使用仓库真实工具及其参数，不能自行臆造一个通用命令。
+- lint 只传入本次有改动且可 lint 的文件，或使用工具支持的最窄改动文件选择器。不能仅仅因为文件属于某个应用或包，就执行应用级、包级、工作区级或仓库级 lint、build、typecheck。
+- 执行本次改动的测试文件，以及与改动生产代码直接相关的定向测试。除非用户明确要求扩大验证范围，否则不能运行整个应用、包或仓库的全量测试。
+- 遵守仓库对命令的明确限制。相关命令被禁止，或现有工具不支持文件级执行时，要报告该项无法运行，并继续执行其他适用的改动文件检查；禁止用扩大到整个应用或仓库的命令代替。
 - 除仓库规定的检查外，还要执行 `git diff --check`，在暂存前发现空白符错误。
-- 每一条必要命令都必须成功退出。任何检查失败、无法执行或无法可靠识别时，必须在暂存、提交、推送之前停止，并报告准确阻塞原因。
+- 每一条实际执行且适用于改动文件的命令都必须成功退出。任何这类检查失败时，必须在暂存、提交、推送之前停止，并报告准确阻塞原因。因为超出改动文件范围而明确不运行的更广检查不算失败。
 - 不得使用 `--no-verify`、关闭或降低 lint 规则、仅为掩盖失败而添加忽略项，或者因为用户要求跳过验证而绕过本门禁。
 - 不要在这个提交推送工作流中修复业务代码。报告失败并等待单独的修复请求。
 - 验证后只要任意文件发生变化，就必须重跑受影响的全部检查。只能暂存和提交与成功验证结果完全一致的状态。
@@ -196,6 +196,6 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - 不要静默遗漏改动文件。
 - 一次调用只创建一个提交。
 - 除非用户明确要求，否则不要改历史、amend、force push 或切换分支。
-- 必要验证失败、被跳过、无法执行，或者已经不再对应当前文件状态时，绝对不能提交或推送。
+- 适用于改动文件的验证失败，或者验证结果已经不再对应当前文件状态时，绝对不能提交或推送。
 - 绝对不能绕过 commit hooks 或强制质量门禁。
 - 不要伪造成功结果；是否成功必须以真实 git 命令结果为准。

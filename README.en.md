@@ -135,7 +135,7 @@ $kc-gdd
 
 Description:
 
-Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, run the repository-required lint and quality checks, then commit and push the current branch only when every required check passes. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
+Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, run file-scoped lint and targeted tests for those changes, then commit and push the current branch only when every applicable changed-file check passes. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
 
 Parameters:
 

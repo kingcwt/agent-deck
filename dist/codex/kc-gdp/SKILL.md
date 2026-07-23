@@ -1,6 +1,6 @@
 ---
 name: kc-gdp
-description: Describe the current repository's changed files one by one with short, concrete summaries, run the repository-required lint and quality checks, then commit and push only when every required check passes. Use when the user types /kc-gdp, $kc-gdp, kc-gdp, or asks to summarize current changes and then push them in one flow.
+description: Describe the current repository's changed files one by one with short, concrete summaries, run file-scoped lint and targeted tests for those changes, then commit and push only when every applicable changed-file check passes. Use when the user types /kc-gdp, $kc-gdp, kc-gdp, or asks to summarize current changes and then push them in one flow.
 ---
 
 > Canonical source for this skill. Keep this file as the only executable source of truth.
@@ -10,7 +10,7 @@ description: Describe the current repository's changed files one by one with sho
 
 ## Description
 
-Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, run the repository-required lint and quality checks, then commit and push the current branch only when every required check passes. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
+Read the current repository diff, generate one short description per changed file when no custom message is provided, build a commit message, run file-scoped lint and targeted tests for those changes, then commit and push the current branch only when every applicable changed-file check passes. Generated descriptions default to Chinese, and switch to English only when `-e` is passed.
 
 ## Parameters
 
@@ -87,13 +87,13 @@ $kc-gdp -e feat: add region-manager entry selection flow
 
 ### 5. Pass the mandatory quality gate
 
-- Treat the complete, final working-tree content intended for the commit as the validation target.
-- Discover the applicable commands from repository-local instructions such as `AGENTS.md` or `CLAUDE.md`, package scripts, Makefiles or task runners, and CI configuration. Use the repository's actual commands instead of inventing a generic command.
-- Run lint for every affected application or package that provides a lint command. If the repository defines build, typecheck, or another command as its lint validation, run that exact command.
-- Also run every typecheck, test, build, or other quality check that repository instructions require for the changed scope. Never treat reviewing the diff as a replacement for executable validation.
-- Respect explicit repository restrictions on commands. When a required command is forbidden, use only an explicitly documented equivalent; if no allowed equivalent exists, stop before staging and report that validation is blocked.
+- Treat only the complete, final changed files intended for the commit as the mandatory validation scope. Unchanged files and repository-wide health are outside this workflow.
+- Discover file-scoped commands from repository-local instructions such as `AGENTS.md` or `CLAUDE.md`, package scripts, Makefiles or task runners, and CI configuration. Use the repository's actual tools and flags instead of inventing a generic command.
+- Run lint only against the changed lintable files by passing their paths or the narrowest supported changed-file selector. Do not run application-, package-, workspace-, or repository-wide lint, build, or typecheck merely because a changed file belongs to that scope.
+- Run changed test files and directly relevant targeted tests for the changed production files. Do not expand to an application's, package's, or repository's full test suite unless the user explicitly requests broader validation.
+- Respect explicit repository restrictions on commands. When a relevant command is forbidden or the available tool cannot run at file scope, report that item as not runnable and continue with the other applicable changed-file checks; never widen the command to the whole application or repository as a substitute.
 - Run `git diff --check` in addition to the repository-defined checks so whitespace errors are caught before staging.
-- Require a successful exit status from every required command. If any check fails, cannot run, or cannot be identified reliably, stop before staging, committing, or pushing and report the exact blocker.
+- Require a successful exit status from every applicable changed-file command that is run. If one of those checks fails, stop before staging, committing, or pushing and report the exact blocker. A broader check that was intentionally not run because it exceeds changed-file scope is not a failure.
 - Do not bypass this gate with `--no-verify`, by disabling or weakening lint rules, by adding ignores solely to hide failures, or because the user asks to skip validation.
 - Do not repair application code inside this commit-and-push workflow. Report the failure and wait for a separate fix request.
 - If any file changes after validation, rerun all checks affected by that change. Only the exact successfully validated state may be staged and committed.
@@ -128,6 +128,6 @@ $kc-gdp -e feat: add region-manager entry selection flow
 - Do not silently drop changed files from the commit set.
 - Do not create multiple commits from one invocation.
 - Do not rewrite history, amend prior commits, force-push, or switch branches unless the user explicitly asks.
-- Never commit or push when required validation has failed, was skipped, could not run, or no longer matches the current file state.
+- Never commit or push when an applicable changed-file validation has failed or no longer matches the current file state.
 - Never bypass commit hooks or the mandatory quality gate.
 - Do not fabricate success. Verification must come from the actual git command results.
